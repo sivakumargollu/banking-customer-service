@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bank-counter-service.iml" filepath="$PROJECT_DIR$/bank-counter-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bank-counter-service-contract/bank-counter-service-contract.iml" filepath="$PROJECT_DIR$/bank-counter-service-contract/bank-counter-service-contract.iml" />
+    </modules>
+  </component>
+</project>
