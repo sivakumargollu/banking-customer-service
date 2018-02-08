@@ -1,36 +1,25 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.models.CustomerDetails;
+import com.abcbank.counter.service.models.DBAdapter;
+import com.abcbank.counter.service.models.Token;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 @Repository
+
 public class BankCounterDAO {
 
 	@Autowired
-	JdbcTemplate jdbcTemplate;
+	DBAdapter dbAdapter;
 
-	@PersistenceContext
-	EntityManager entityManager;
-
-	public EntityManager getEntityManager() {
-		return entityManager;
+	public void saveCustomer(CustomerDetails customerDetails){
+		dbAdapter.saveCustomer(customerDetails);
 	}
 
-	public void setEntityManager(EntityManager entityManager) {
-		this.entityManager = entityManager;
+	public Token saveToken(Token token) {
+		dbAdapter.saveToken(token);
+		return token;
 	}
-
-	public JdbcTemplate getJdbcTemplate() {
-		return jdbcTemplate;
-	}
-
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
 
 }

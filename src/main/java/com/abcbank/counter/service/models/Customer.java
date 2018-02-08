@@ -5,17 +5,20 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "CUSTOMER")
 public class Customer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	Long customerId;
 
-	@Column(name = "NAME")
 	String  name;
 
 	String  phNo;
 
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Address.class)
+	@JoinTable(name = "ADDRESS", joinColumns = { @JoinColumn(name = "CUSTOMER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID") })
 	Address address;
 
 	public String getName() {
@@ -34,27 +37,20 @@ public class Customer {
 		this.phNo = phNo;
 	}
 
-	public Address getAddres() {
-		return address;
-	}
-
-	public void setAddres(Address addres) {
-		this.address = addres;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+	@OneToOne(targetEntity = Address.class, mappedBy = "customerId", fetch = FetchType.LAZY)
 	public Address getAddress() {
 		return address;
 	}
 
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 }

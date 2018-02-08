@@ -13,7 +13,12 @@ public enum BankService {
 		this.avgTimeRequiredInMin = avgTimeRequiredInMin;
 	}
 
+	public int getAvgTimeRequiredInMin() {
+		return avgTimeRequiredInMin;
+	}
 
-
+	public void setAvgTimeRequiredInMin(int avgTimeRequiredInMin) {
+		this.avgTimeRequiredInMin = avgTimeRequiredInMin;
+	}
 }
 

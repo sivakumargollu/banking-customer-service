@@ -8,12 +8,17 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	@Column(name = "ADDRESS_ID")
+	Long addressId;
+
+	@Column(name = "CUSTOMER_ID")
+	String customerId;
 
 	String city;
 
 	String zipCode;
 
+	@Column(name = "CITY")
 	public String getCity() {
 		return city;
 	}
@@ -22,11 +27,28 @@ public class Address {
 		this.city = city;
 	}
 
+	@Column(name = "ZIPCODE")
 	public String getZipCode() {
 		return zipCode;
 	}
 
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	public Long getAddressId() {
+		return addressId;
+	}
+
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 }

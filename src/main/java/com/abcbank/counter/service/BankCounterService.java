@@ -1,14 +1,18 @@
 package com.abcbank.counter.service;
 
-import com.abcbank.counter.service.models.CustomerDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenStatus;
+import com.abcbank.counter.service.models.*;
 import com.abcbank.counter.service.repository.BankCounterRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/ABCBank/counter-service/")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@RequestMapping("/ABCBank/counter-service")
 @RestController
+@Transactional
 public class BankCounterService {
 
 	@Autowired
@@ -25,17 +29,32 @@ public class BankCounterService {
 		return token;
 	}
 
-	@RequestMapping(value = "/token/process/", method = RequestMethod.POST)
-	public String processToken(@RequestBody OperatorDetails operatorDetails, @RequestParam("tokenId") String tokenId ) {
-
-		return "Process";
+	@RequestMapping(value = "/counter/status", method = RequestMethod.GET)
+	public List<BankCounter> updateToken() {
+        return bankCounterRepository.getCounterStatus();
 	}
 
-	@RequestMapping(value = "/token/status/update", method = RequestMethod.POST)
-	public String updateToken(@RequestParam String tokenId, @RequestParam TokenStatus tokenStatus, OperatorDetails operatorDetails) {
-        return "Updated";
-	}
+	public static void main(String[] args) throws JsonProcessingException {
 
+		ObjectMapper objectMapper = new ObjectMapper();
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setNewCustomer(true);
+		customerDetails.setCustomerId(123456);
+		customerDetails.setBankService(BankService.ACC_OPEN);
+		customerDetails.setPriority(Priority.REGULAR);
+		Customer customer = new Customer();
+
+		customer.setCustomerId(123456l);
+		customer.setName("Siva Kumar");
+		customer.setPhNo("99889988778");
+		Address address = new Address();
+		address.setCity("Kaikalur");
+		address.setZipCode("34343434");
+		customer.setAddress(address);
+		customerDetails.setCustomer(customer);
+
+		String json = objectMapper.writeValueAsString(customerDetails);
+	}
 
 
 }
