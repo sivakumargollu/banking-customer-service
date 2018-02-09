@@ -1,38 +1,72 @@
 package com.abcbank.counter.service.models;
 
+import com.abcbank.counter.service.repository.BankCounterManager;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.*;
+
+@Component
 public class BankCounter implements Comparable<BankCounter> , Runnable {
 
-	BankService[] services;
-	Token token;
-	CounterStatus status;
-	TokenMaster tokenMaster;
-	Long counterId;
-	boolean isNewToken;
+	BankService[]      availableServices;
+	CounterStatus      status;
+	OperatorDetails    operatorDetails;
+	String             counterId;
 
-	public boolean isNewToken() {
-		return isNewToken;
+	@Autowired
+	BankCounterManager bankCounterManager;
+
+	public String getCounterId() {
+		return counterId;
 	}
 
-	public void setNewToken(boolean newToken) {
-		isNewToken = newToken;
+	public void setCounterId(String counterId) {
+		this.counterId = counterId;
+	}
+
+	@JsonIgnore
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	PriorityQueue<Token> tokenQue;
+
+	public PriorityQueue<Token> getTokenQue() {
+		return tokenQue;
+	}
+
+	public void setTokenQue(PriorityQueue<Token> tokenQue) {
+		this.tokenQue = tokenQue;
+	}
+
+	public BankCounter(){}
+
+	public BankCounter(String counterId, BankService[] availableServices, CounterStatus status, OperatorDetails operatorDetails) {
+		this.availableServices = availableServices;
+		this.status = status;
+		this.operatorDetails = operatorDetails;
+		this.counterId = counterId;
+	}
+
+	public OperatorDetails getOperatorDetails() {
+		return operatorDetails;
+	}
+
+	public void setOperatorDetails(OperatorDetails operatorDetails) {
+		this.operatorDetails = operatorDetails;
+	}
+
+	public BankService[] getAvailableServices() {
+		return availableServices;
+	}
+
+	public void setAvailableServices(BankService[] availableServices) {
+		this.availableServices = availableServices;
 	}
 
 	Logger logger = LoggerFactory.getLogger(BankCounter.class);
-
-	public Token getToken() {
-		return token;
-	}
-
-	public void setToken(Token token) {
-		this.token = token;
-	}
-
-	BankCounter(TokenMaster tokenMaster, BankService[] services) {
-		this.tokenMaster = tokenMaster;
-	}
 
 	public CounterStatus getStatus() {
 		return status;
@@ -42,16 +76,19 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 		this.status = status;
 	}
 
-	BankCounter(BankService[] services) {
-		this.services = services;
-	}
-
-	public void serve()  {
+	public void serve(Token token)  {
 		try {
-			logger.info("Serving token at " + counterId + ", Service type " + token.getRequestedService().name());
-			Thread.sleep(1000); //serving token
+			BankService service = token.getReqService();
+			logger.info("Serving token at " + operatorDetails.toString() + ", Service type " + token.getReqService().name());
+			Thread.sleep(service.avgTimeRequiredInMin); //serving token
 			this.status = CounterStatus.AVAILABLE;
-			tokenMaster.recieve(this);
+			if(token.actionItems.size() > 0) {
+				token.setStatus(TokenStatus.FORWARDED);
+				bankCounterManager.addWaitingToken(token);
+			} else {
+				token.setStatus(TokenStatus.COMPLETED);
+			}
+
 		} catch (InterruptedException ie) {
 			logger.error(ie.getStackTrace().toString());
 		}
@@ -60,23 +97,28 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 
 	@Override
 	public int compareTo(BankCounter o) {
-		if(o.status.priority > this.status.priority) {
-			return -1;
-		} else if(o.status.priority < this.status.priority) {
-			return 1;
+		if(o != null && o.tokenQue != null && this.tokenQue != null) {
+
+			if (o.tokenQue.size() > this.tokenQue.size()) {
+				return -1;
+			} else if (o.tokenQue.size() < this.tokenQue.size()) {
+				return 1;
+			}
 		}
 		return 0;
 	}
 
 	@Override
 	public void run() {
-		while (!isNewToken) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		try {
+			while (tokenQue.isEmpty()) {
+				Thread.sleep(5000);
 			}
-			serve();
+		} catch (Exception ex){
+			logger.error("Error while starting counter ", ex);
+		}
+		for (Token token : tokenQue) {
+			serve(token);
 		}
 	}
 }

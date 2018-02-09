@@ -5,9 +5,11 @@
 
     <bean id="bankCounterRepository" class="com.abcbank.counter.service.repository.BankCounterRepository"/>
     <bean id="bankCounterDAO" class="com.abcbank.counter.service.repository.BankCounterDAO"/>
-    <bean id="tokenQueManager" class="com.abcbank.counter.service.models.TokenQueManger">
-        <constructor-arg index="0" value="${premium.priority.factor}"/>
+    <bean id="bankCounterManager" class="com.abcbank.counter.service.repository.BankCounterManager">
+        <constructor-arg index="0" value="${bankcounter-resource}"/>
     </bean>
+    <bean id="dbAdapter" class="com.abcbank.counter.service.models.H2DBAdapter"/>
+
     <context:annotation-config />
 
 
