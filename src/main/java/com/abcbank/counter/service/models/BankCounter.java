@@ -1,18 +1,25 @@
 package com.abcbank.counter.service.models;
 
+import com.abcbank.counter.service.repository.BankCounterManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class BankCounter implements Comparable<BankCounter> , Runnable {
 
-	BankService[] services;
-	CounterStatus status;
-	OperatorDetails operatorDetails;
-	String counterId;
+	BankService[]      availableServices;
+	CounterStatus      status;
+	OperatorDetails    operatorDetails;
+	String             counterId;
+
+	@Autowired
+	BankCounterManager bankCounterManager;
 
 	public String getCounterId() {
 		return counterId;
@@ -24,20 +31,20 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 
 	@JsonIgnore
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-	PriorityQueue<Token> priorityQueue;
+	PriorityQueue<Token> tokenQue;
 
-	public PriorityQueue<Token> getPriorityQueue() {
-		return priorityQueue;
+	public PriorityQueue<Token> getTokenQue() {
+		return tokenQue;
 	}
 
-	public void setPriorityQueue(PriorityQueue<Token> priorityQueue) {
-		this.priorityQueue = priorityQueue;
+	public void setTokenQue(PriorityQueue<Token> tokenQue) {
+		this.tokenQue = tokenQue;
 	}
 
 	public BankCounter(){}
 
-	public BankCounter(String counterId, BankService[] services, CounterStatus status, OperatorDetails operatorDetails) {
-		this.services = services;
+	public BankCounter(String counterId, BankService[] availableServices, CounterStatus status, OperatorDetails operatorDetails) {
+		this.availableServices = availableServices;
 		this.status = status;
 		this.operatorDetails = operatorDetails;
 		this.counterId = counterId;
@@ -51,12 +58,12 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 		this.operatorDetails = operatorDetails;
 	}
 
-	public BankService[] getServices() {
-		return services;
+	public BankService[] getAvailableServices() {
+		return availableServices;
 	}
 
-	public void setServices(BankService[] services) {
-		this.services = services;
+	public void setAvailableServices(BankService[] availableServices) {
+		this.availableServices = availableServices;
 	}
 
 	Logger logger = LoggerFactory.getLogger(BankCounter.class);
@@ -71,9 +78,17 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 
 	public void serve(Token token)  {
 		try {
-			logger.info("Serving token at " + operatorDetails.toString() + ", Service type " + token.getRequestedService().name());
-			Thread.sleep(token.getRequestedService().avgTimeRequiredInMin); //serving token
+			BankService service = token.getReqService();
+			logger.info("Serving token at " + operatorDetails.toString() + ", Service type " + token.getReqService().name());
+			Thread.sleep(service.avgTimeRequiredInMin); //serving token
 			this.status = CounterStatus.AVAILABLE;
+			if(token.actionItems.size() > 0) {
+				token.setStatus(TokenStatus.FORWARDED);
+				bankCounterManager.addWaitingToken(token);
+			} else {
+				token.setStatus(TokenStatus.COMPLETED);
+			}
+
 		} catch (InterruptedException ie) {
 			logger.error(ie.getStackTrace().toString());
 		}
@@ -82,11 +97,11 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 
 	@Override
 	public int compareTo(BankCounter o) {
-		if(o != null && o.priorityQueue != null && this.priorityQueue != null) {
+		if(o != null && o.tokenQue != null && this.tokenQue != null) {
 
-			if (o.priorityQueue.size() > this.priorityQueue.size()) {
+			if (o.tokenQue.size() > this.tokenQue.size()) {
 				return -1;
-			} else if (o.priorityQueue.size() < this.priorityQueue.size()) {
+			} else if (o.tokenQue.size() < this.tokenQue.size()) {
 				return 1;
 			}
 		}
@@ -96,13 +111,13 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 	@Override
 	public void run() {
 		try {
-			while (priorityQueue.isEmpty()) {
+			while (tokenQue.isEmpty()) {
 				Thread.sleep(5000);
 			}
 		} catch (Exception ex){
 			logger.error("Error while starting counter ", ex);
 		}
-		for (Token token : priorityQueue) {
+		for (Token token : tokenQue) {
 			serve(token);
 		}
 	}

@@ -50,7 +50,7 @@ public class BankCounterService {
 		Address address = new Address();
 		address.setCity("Kaikalur");
 		address.setZipCode("34343434");
-		customer.setAddress(address);
+		customerDetails.setAddress(address);
 		customerDetails.setCustomer(customer);
 
 		String json = objectMapper.writeValueAsString(customerDetails);

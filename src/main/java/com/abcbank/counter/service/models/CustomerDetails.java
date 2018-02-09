@@ -2,18 +2,19 @@ package com.abcbank.counter.service.models;
 
 public class CustomerDetails {
 
-	Customer Customer;
-	Priority                                    priority;
-	BankService                                 bankService;
-	boolean                                     isNewCustomer;
-	int                                         customerId;
+	Customer    customer;
+	Address     address;
+	Priority    priority;
+	BankService bankService;
+	boolean     isNewCustomer;
+	int         customerId;
 
 	public Customer getCustomer() {
-		return Customer;
+		return customer;
 	}
 
 	public void setCustomer(Customer customer) {
-		Customer = customer;
+		this.customer = customer;
 	}
 
 	public Priority getPriority() {
@@ -46,5 +47,13 @@ public class CustomerDetails {
 
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 }

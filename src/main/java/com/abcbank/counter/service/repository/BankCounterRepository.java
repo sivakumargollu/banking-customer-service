@@ -19,12 +19,9 @@ public class BankCounterRepository {
 	public BankCounterRepository(){
 
 	}
-	public Integer saveCustomerDetails(CustomerDetails customerDetails) {
-		Customer customer = customerDetails.getCustomer();
-		Address address = customer.getAddress();
+	public CustomerDetails saveCustomerDetails(CustomerDetails customerDetails) {
 		bankCounterDAO.saveCustomer(customerDetails);
-		customer.setAddress(address);
-		return 0;
+		return customerDetails;
 	}
 
 	public Token createToken(CustomerDetails customerDetails) {
@@ -37,7 +34,7 @@ public class BankCounterRepository {
 	}
 
 	public void addTokenToQue(Token token) {
-		bankCounterManager.addToken(token);
+		bankCounterManager.assignCounter(token);
 	}
 
 	public List<BankCounter> getCounterStatus() {

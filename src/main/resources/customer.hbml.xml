@@ -10,6 +10,6 @@
         </id>
         <property name="name" column="NAME" type="java.lang.String"/>
         <property name="phNo" column="PHNO" type="java.lang.String"/>
-        <one-to-one name="address" constrained="true" />
+        <one-to-one name="address" constrained="true" foreign-key="customerId"/>
     </class>
 </hibernate-mapping>

@@ -1,7 +1,7 @@
 [
   {
     "counterId":"ABCBANK-B1-C1",
-    "services":[
+    "availableServices":[
       "ACC_STMT",
       "ATM_SERVICES"
     ],
@@ -19,7 +19,7 @@
   },
   {
     "counterId":"ABCBANK-B1-C2",
-    "services":[
+    "availableServices":[
       "DEPOSIT",
       "WITHDRAW"
     ],
@@ -37,7 +37,7 @@
   },
   {
     "counterId":"ABCBANK-B1-C3",
-    "services":[
+    "availableServices":[
       "DEPOSIT",
       "WITHDRAW"
     ],
@@ -55,7 +55,7 @@
   },
   {
     "counterId":"ABCBANK-B1-C4",
-    "services":[
+    "availableServices":[
       "DEPOSIT",
       "WITHDRAW",
       "ACC_STMT",

@@ -13,13 +13,11 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long customerId;
 
+	@Column(name = "Name")
 	String  name;
 
+	@Column(name = "PHNO")
 	String  phNo;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Address.class)
-	@JoinTable(name = "ADDRESS", joinColumns = { @JoinColumn(name = "CUSTOMER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID") })
-	Address address;
 
 	public String getName() {
 		return name;
@@ -35,15 +33,6 @@ public class Customer {
 
 	public void setPhNo(String phNo) {
 		this.phNo = phNo;
-	}
-
-	@OneToOne(targetEntity = Address.class, mappedBy = "customerId", fetch = FetchType.LAZY)
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
 	}
 
 	public Long getCustomerId() {

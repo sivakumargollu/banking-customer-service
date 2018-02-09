@@ -1,9 +1,6 @@
 package com.abcbank.counter.service.repository;
 
-import com.abcbank.counter.service.models.BankCounter;
-import com.abcbank.counter.service.models.BankService;
-import com.abcbank.counter.service.models.Priority;
-import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.models.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
@@ -17,20 +14,36 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 @Component
 @Configuration
 @PropertySource("classpath:bankconfig.properties")
-public class BankCounterManager {
+public class BankCounterManager implements Runnable {
 
 	PriorityQueue<BankCounter> bankCounters;
+	LinkedList<Token> waitingTokens;
 
 	@Value("${bankcounter-resource}")
 	String counterResourceFile;
 
 	@Value("${priority-factor}")
 	String priorityFactor;
+
+	public LinkedList<Token> getWaitingTokens() {
+		return waitingTokens;
+	}
+
+	public void setWaitingTokens(LinkedList<Token> waitingTokens) {
+		this.waitingTokens = waitingTokens;
+	}
+
+	public int addWaitingToken(Token token){
+		waitingTokens.add(token);
+		return waitingTokens.size();
+	}
 
 	Logger logger = LoggerFactory.getLogger(BankCounterManager.class);
 
@@ -54,20 +67,20 @@ public class BankCounterManager {
 
 	}
 
-	public void addToken(Token token){
-
+	public void assignCounter(Token token){
 		if(bankCounters == null){
 			intializeCounters();
 		}
 		BankCounter counter = bankCounters.poll();
-		PriorityQueue<Token> q = counter.getPriorityQueue();
-		BankService srvc = token.getRequestedService();
-		long serveTime = q.size() * srvc.getAvgTimeRequiredInMin() * 60000; //into milli seconds
+		PriorityQueue<Token> q = counter.getTokenQue();
+		BankService service = token.getActionItems().pollFirst();
+		token.setReqService(service);
+		long serveTime = q.size() * service.getAvgTimeRequiredInMin() * 60000; //into milli seconds
 		if(token.getPriority().equals(Priority.PREMIUM)){
 			serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
 		}
-		token.setApproximateServingTime(DateTime.now().plus(serveTime));
-		counter.getPriorityQueue().add(token);
+		token.setServeTime(DateTime.now().plus(serveTime));
+		counter.getTokenQue().add(token);
 		bankCounters.add(counter);
 	}
 
@@ -84,7 +97,7 @@ public class BankCounterManager {
 
 		//setting empty que
 		for (BankCounter bankCounter : bankCounters) {
-			bankCounter.setPriorityQueue(new PriorityQueue<Token>());
+			bankCounter.setTokenQue(new PriorityQueue<Token>());
 		}
 	}
 
@@ -97,5 +110,27 @@ public class BankCounterManager {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
+	}
+
+	@Override
+	public void run() {
+		while (true){
+			if(waitingTokens.isEmpty()){
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} else {
+				while ( waitingTokens.size() > 0) {
+					Token token = waitingTokens.pollFirst();
+					if(Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED).contains(token.getStatus())) {
+						assignCounter(token);
+					} else {
+						//update DB
+					}
+				}
+			}
+		}
 	}
 }
