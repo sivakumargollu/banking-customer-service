@@ -33,8 +33,8 @@ public class BankCounterRepository {
         return token;
 	}
 
-	public void addTokenToQue(Token token) {
-		bankCounterManager.assignCounter(token);
+	public void addToken(Token token) {
+		bankCounterManager.addWaitingToken(token);
 	}
 
 	public List<BankCounter> getCounterStatus() {

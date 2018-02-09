@@ -60,6 +60,7 @@ public class BankCounterManager implements Runnable {
 
 	public BankCounterManager(String counterResourceFile){
 		this.counterResourceFile = counterResourceFile;
+		waitingTokens = new LinkedList<Token>();
 		intializeCounters();
 	}
 
@@ -127,7 +128,7 @@ public class BankCounterManager implements Runnable {
 					if(Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED).contains(token.getStatus())) {
 						assignCounter(token);
 					} else {
-						//update DB
+						//update status in DB
 					}
 				}
 			}

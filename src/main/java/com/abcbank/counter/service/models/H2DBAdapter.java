@@ -6,18 +6,23 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 
 @Repository
-public class H2DBAdapter implements DBAdapter {
+public class H2DBAdapter implements DBAdapter<Session> {
+
+	static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
 	@Override
-	public Connection getConnection() {
-		return null;
+	public Session getConnection(boolean isNew) {
+		if(isNew){
+			return sessionFactory.openSession();
+		} else {
+			return sessionFactory.getCurrentSession();
+		}
 	}
 
 	@Override
 	public CustomerDetails saveCustomer(CustomerDetails details) {
 		try {
-			SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-			Session session = sessionFactory.openSession();
+			Session session = getConnection(true);
 			session.beginTransaction();
 			session.save(details.getCustomer());
 			details.getAddress().setCustomerId(details.getCustomer().getCustomerId());

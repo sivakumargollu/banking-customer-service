@@ -2,9 +2,9 @@ package com.abcbank.counter.service.models;
 
 import java.sql.Connection;
 
-public interface DBAdapter {
+public interface DBAdapter<T> {
 
-	Connection getConnection();
+	T getConnection(boolean isNew);
 
 	CustomerDetails saveCustomer(CustomerDetails customerDetails);
 	Token saveToken(Token token);

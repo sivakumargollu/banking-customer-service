@@ -25,7 +25,7 @@ public class BankCounterService {
 			bankCounterRepository.saveCustomerDetails(customerDetails);
 		}
 		Token token = bankCounterRepository.createToken(customerDetails);
-		bankCounterRepository.addTokenToQue(token);
+		bankCounterRepository.addToken(token);
 		return token;
 	}
 
