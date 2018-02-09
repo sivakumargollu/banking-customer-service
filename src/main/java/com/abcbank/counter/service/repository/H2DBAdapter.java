@@ -1,9 +1,11 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.repository;
+
+import com.abcbank.counter.service.models.CustomerDetails;
+import com.abcbank.counter.service.models.Token;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Repository;
-import java.sql.*;
 
 @Repository
 public class H2DBAdapter implements DBAdapter<Session> {
@@ -12,7 +14,7 @@ public class H2DBAdapter implements DBAdapter<Session> {
 
 	@Override
 	public Session getConnection(boolean isNew) {
-		if(isNew){
+		if (isNew) {
 			return sessionFactory.openSession();
 		} else {
 			return sessionFactory.getCurrentSession();

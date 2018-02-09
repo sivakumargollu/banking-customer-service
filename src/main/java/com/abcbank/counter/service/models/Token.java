@@ -1,5 +1,9 @@
 package com.abcbank.counter.service.models;
 
+import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.MultiCounterServices;
+import com.abcbank.counter.service.enums.Priority;
+import com.abcbank.counter.service.enums.TokenStatus;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -7,29 +11,28 @@ import java.util.LinkedList;
 
 @Entity
 @Table(name = "TOKEN")
-public class Token implements Comparable<Token>{
+public class Token implements Comparable<Token> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long        Id;
+	Long Id;
 
-	String      tokenId;
+	String tokenId;
 
 	@Column(name = "CUSTOMER_ID")
-	Long        customerId;
+	Long customerId;
 
 	@Column(name = "PRIORITY")
 	@Enumerated(EnumType.STRING)
-	Priority    priority;
+	Priority priority;
 
 	@Column(name = "REQUESTED_SERVICE")
 	@Enumerated
 	BankService reqService;
 
-	DateTime    serveTime;
+	DateTime serveTime;
 
-	@Column(name="CREATED_TIME", nullable = true,
-			columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP")
+	@Column(name = "CREATED_TIME", nullable = true, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
 	DateTime createdTime;
 
 	@Column(name = "TOKEN_STATUS")
@@ -68,10 +71,10 @@ public class Token implements Comparable<Token>{
 
 	private LinkedList<BankService> initActionItems() {
 		actionItems = new LinkedList<BankService>();
-		if (reqService != null){
-			if(reqService.isMultiCounter()) {
+		if (reqService != null) {
+			if (reqService.isMultiCounter()) {
 				BankService[] services = MultiCounterServices.getActionItemsByService(reqService);
-				if(services != null) {
+				if (services != null) {
 					for (BankService service : services) {
 						actionItems.add(service);
 					}
@@ -142,13 +145,11 @@ public class Token implements Comparable<Token>{
 
 	@Override
 	public int compareTo(Token o) {
-		if(o.serveTime.isAfter(this.serveTime)){
+		if (o.serveTime.isAfter(this.serveTime)) {
 			return -1;
-		}
-		else if(o.serveTime.isBefore(this.serveTime)){
+		} else if (o.serveTime.isBefore(this.serveTime)) {
 			return 1;
-		}
-		else {
+		} else {
 			return 0;
 		}
 	}

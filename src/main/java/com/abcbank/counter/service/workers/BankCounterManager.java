@@ -1,6 +1,9 @@
-package com.abcbank.counter.service.repository;
+package com.abcbank.counter.service.workers;
 
-import com.abcbank.counter.service.models.*;
+import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.Priority;
+import com.abcbank.counter.service.enums.TokenStatus;
+import com.abcbank.counter.service.models.Token;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
@@ -24,7 +27,7 @@ import java.util.PriorityQueue;
 public class BankCounterManager implements Runnable {
 
 	PriorityQueue<BankCounter> bankCounters;
-	LinkedList<Token> waitingTokens;
+	LinkedList<Token>          waitingTokens;
 
 	@Value("${bankcounter-resource}")
 	String counterResourceFile;
@@ -40,7 +43,7 @@ public class BankCounterManager implements Runnable {
 		this.waitingTokens = waitingTokens;
 	}
 
-	public int addWaitingToken(Token token){
+	public int addWaitingToken(Token token) {
 		waitingTokens.add(token);
 		return waitingTokens.size();
 	}
@@ -48,7 +51,7 @@ public class BankCounterManager implements Runnable {
 	Logger logger = LoggerFactory.getLogger(BankCounterManager.class);
 
 	public PriorityQueue<BankCounter> getBankCounters() {
-		if(bankCounters == null){
+		if (bankCounters == null) {
 			intializeCounters();
 		}
 		return bankCounters;
@@ -58,18 +61,18 @@ public class BankCounterManager implements Runnable {
 		this.bankCounters = bankCounters;
 	}
 
-	public BankCounterManager(String counterResourceFile){
+	public BankCounterManager(String counterResourceFile) {
 		this.counterResourceFile = counterResourceFile;
 		waitingTokens = new LinkedList<Token>();
 		intializeCounters();
 	}
 
-	public BankCounterManager(){
+	public BankCounterManager() {
 
 	}
 
-	public void assignCounter(Token token){
-		if(bankCounters == null){
+	public void assignCounter(Token token) {
+		if (bankCounters == null) {
 			intializeCounters();
 		}
 		BankCounter counter = bankCounters.poll();
@@ -77,7 +80,7 @@ public class BankCounterManager implements Runnable {
 		BankService service = token.getActionItems().pollFirst();
 		token.setReqService(service);
 		long serveTime = q.size() * service.getAvgTimeRequiredInMin() * 60000; //into milli seconds
-		if(token.getPriority().equals(Priority.PREMIUM)){
+		if (token.getPriority().equals(Priority.PREMIUM)) {
 			serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
 		}
 		token.setServeTime(DateTime.now().plus(serveTime));
@@ -89,11 +92,12 @@ public class BankCounterManager implements Runnable {
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<PriorityQueue<BankCounter>> type = new TypeReference<PriorityQueue<BankCounter>>() {};
+		final TypeReference<PriorityQueue<BankCounter>> type = new TypeReference<PriorityQueue<BankCounter>>() {
+		};
 		try {
 			bankCounters = objectMapper.readValue(classLoader.getResourceAsStream(counterResourceFile), type);
 		} catch (IOException e) {
-			logger.error("Error in intializing " ,  e);
+			logger.error("Error in intializing ", e);
 		}
 
 		//setting empty que
@@ -115,17 +119,17 @@ public class BankCounterManager implements Runnable {
 
 	@Override
 	public void run() {
-		while (true){
-			if(waitingTokens.isEmpty()){
+		while (true) {
+			if (waitingTokens.isEmpty()) {
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			} else {
-				while ( waitingTokens.size() > 0) {
+				while (waitingTokens.size() > 0) {
 					Token token = waitingTokens.pollFirst();
-					if(Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED).contains(token.getStatus())) {
+					if (Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED).contains(token.getStatus())) {
 						assignCounter(token);
 					} else {
 						//update status in DB
