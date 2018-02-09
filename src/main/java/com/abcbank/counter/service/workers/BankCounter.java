@@ -1,6 +1,10 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.workers;
 
-import com.abcbank.counter.service.repository.BankCounterManager;
+import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.CounterStatus;
+import com.abcbank.counter.service.enums.TokenStatus;
+import com.abcbank.counter.service.models.OperatorDetails;
+import com.abcbank.counter.service.models.Token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
@@ -8,15 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.PriorityQueue;
 
 @Component
-public class BankCounter implements Comparable<BankCounter> , Runnable {
+public class BankCounter implements Comparable<BankCounter>, Runnable {
 
-	BankService[]      availableServices;
-	CounterStatus      status;
-	OperatorDetails    operatorDetails;
-	String             counterId;
+	BankService[]   availableServices;
+	CounterStatus   status;
+	OperatorDetails operatorDetails;
+	String          counterId;
 
 	@Autowired
 	BankCounterManager bankCounterManager;
@@ -41,7 +45,8 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 		this.tokenQue = tokenQue;
 	}
 
-	public BankCounter(){}
+	public BankCounter() {
+	}
 
 	public BankCounter(String counterId, BankService[] availableServices, CounterStatus status, OperatorDetails operatorDetails) {
 		this.availableServices = availableServices;
@@ -76,13 +81,13 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 		this.status = status;
 	}
 
-	public void serve(Token token)  {
+	public void serve(Token token) {
 		try {
 			BankService service = token.getReqService();
 			logger.info("Serving token at " + operatorDetails.toString() + ", Service type " + token.getReqService().name());
-			Thread.sleep(service.avgTimeRequiredInMin); //serving token
+			Thread.sleep(service.getAvgTimeRequiredInMin()); //serving token
 			this.status = CounterStatus.AVAILABLE;
-			if(token.actionItems.size() > 0) {
+			if (token.getActionItems().size() > 0) {
 				token.setStatus(TokenStatus.FORWARDED);
 				bankCounterManager.addWaitingToken(token);
 			} else {
@@ -97,7 +102,7 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 
 	@Override
 	public int compareTo(BankCounter o) {
-		if(o != null && o.tokenQue != null && this.tokenQue != null) {
+		if (o != null && o.tokenQue != null && this.tokenQue != null) {
 
 			if (o.tokenQue.size() > this.tokenQue.size()) {
 				return -1;
@@ -114,7 +119,7 @@ public class BankCounter implements Comparable<BankCounter> , Runnable {
 			while (tokenQue.isEmpty()) {
 				Thread.sleep(5000);
 			}
-		} catch (Exception ex){
+		} catch (Exception ex) {
 			logger.error("Error while starting counter ", ex);
 		}
 		for (Token token : tokenQue) {

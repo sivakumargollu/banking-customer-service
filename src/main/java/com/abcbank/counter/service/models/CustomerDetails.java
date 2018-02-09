@@ -1,5 +1,8 @@
 package com.abcbank.counter.service.models;
 
+import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.Priority;
+
 public class CustomerDetails {
 
 	Customer    customer;

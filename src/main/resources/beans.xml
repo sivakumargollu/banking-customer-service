@@ -3,12 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="bankCounterRepository" class="com.abcbank.counter.service.repository.BankCounterRepository"/>
-    <bean id="bankCounterDAO" class="com.abcbank.counter.service.repository.BankCounterDAO"/>
-    <bean id="bankCounterManager" class="com.abcbank.counter.service.repository.BankCounterManager">
+    <bean operatorId="bankCounterRepository" class="com.abcbank.counter.service.repository.BankCounterRepository"/>
+    <bean operatorId="bankCounterDAO" class="com.abcbank.counter.service.repository.BankCounterDAO"/>
+    <bean operatorId="bankCounterManager" class="com.abcbank.counter.service.workers.BankCounterManager">
         <constructor-arg index="0" value="${bankcounter-resource}"/>
     </bean>
-    <bean id="dbAdapter" class="com.abcbank.counter.service.models.H2DBAdapter"/>
+    <bean operatorId="dbAdapter" class="com.abcbank.counter.service.repository.H2DBAdapter"/>
 
     <context:annotation-config />
 

@@ -5,9 +5,9 @@
 
 <hibernate-mapping>
     <class name="com.abcbank.counter.service.models.Customer" table="CUSTOMER">
-        <id name="customerId" type="int" column="CUSTOMER_ID">
+        <operatorId name="customerId" type="int" column="CUSTOMER_ID">
             <generator class="native"/>
-        </id>
+        </operatorId>
         <property name="name" column="NAME" type="java.lang.String"/>
         <property name="phNo" column="PHNO" type="java.lang.String"/>
         <one-to-one name="address" constrained="true" foreign-key="customerId"/>

@@ -5,9 +5,9 @@
 
 <hibernate-mapping>
     <class name="com.abcbank.counter.service.models.Address" table="ADDRESS">
-        <id name="addressId" type="int" column="ADDRESS_ID">
+        <operatorId name="addressId" type="int" column="ADDRESS_ID">
             <generator class="native"/>
-        </id>
+        </operatorId>
         <property name="city" column="CITY" type="string"/>
         <property name="zipCode" column="ZIPCODE" type="int"/>
         <property name="customerId" column="CUSTOMER_ID" type="int"/>

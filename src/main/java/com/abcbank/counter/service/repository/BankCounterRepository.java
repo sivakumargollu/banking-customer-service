@@ -1,6 +1,11 @@
 package com.abcbank.counter.service.repository;
 
-import com.abcbank.counter.service.models.*;
+import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.Priority;
+import com.abcbank.counter.service.models.CustomerDetails;
+import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.workers.BankCounter;
+import com.abcbank.counter.service.workers.BankCounterManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +21,10 @@ public class BankCounterRepository {
 	@Autowired
 	BankCounterManager bankCounterManager;
 
-	public BankCounterRepository(){
+	public BankCounterRepository() {
 
 	}
+
 	public CustomerDetails saveCustomerDetails(CustomerDetails customerDetails) {
 		bankCounterDAO.saveCustomer(customerDetails);
 		return customerDetails;
@@ -30,7 +36,7 @@ public class BankCounterRepository {
 		BankService requestedService = customerDetails.getBankService();
 		Token token = new Token(customerId, priority, requestedService);
 		bankCounterDAO.saveToken(token);
-        return token;
+		return token;
 	}
 
 	public void addToken(Token token) {
@@ -39,7 +45,7 @@ public class BankCounterRepository {
 
 	public List<BankCounter> getCounterStatus() {
 		ArrayList<BankCounter> counters = new ArrayList<>();
-		if(bankCounterManager != null) {
+		if (bankCounterManager != null) {
 			return new ArrayList<BankCounter>(bankCounterManager.getBankCounters());
 		} else {
 			return counters;

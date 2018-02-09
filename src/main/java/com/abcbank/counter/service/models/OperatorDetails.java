@@ -1,29 +1,33 @@
 package com.abcbank.counter.service.models;
 
-import java.util.HashMap;
+import com.abcbank.counter.service.enums.Previlages;
+import com.abcbank.counter.service.enums.Role;
+
 import java.util.List;
 import java.util.Map;
 
 public class OperatorDetails {
-	String id;
-	Role   role;
-	Map    accessPreviliages;
 
-	public OperatorDetails(String id, Role role,Map<String, List<Previlages>> accessPreviliages) {
-		this.accessPreviliages = accessPreviliages;
-		this.id = id;
+	String operatorId;
+	Role   role;
+	Map    previliages;
+
+	public OperatorDetails(String operatorId, Role role, Map<String, List<Previlages>> accessPreviliages) {
+		this.previliages = accessPreviliages;
+		this.operatorId = operatorId;
 		this.role = role;
 	}
-	public OperatorDetails(){
+
+	public OperatorDetails() {
 
 	}
 
-	public String getId() {
-		return id;
+	public String getOperatorId() {
+		return operatorId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setOperatorId(String operatorId) {
+		this.operatorId = operatorId;
 	}
 
 	public Role getRole() {
@@ -35,10 +39,10 @@ public class OperatorDetails {
 	}
 
 	public Map getAccessPreviliages() {
-		return accessPreviliages;
+		return previliages;
 	}
 
 	public void setAccessPreviliages(Map accessPreviliages) {
-		this.accessPreviliages = accessPreviliages;
+		this.previliages = accessPreviliages;
 	}
 }

@@ -1,4 +1,4 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.enums;
 
 public enum TokenStatus {
 	COMPLETED, CANCELLED, FORWARDED, NEW;

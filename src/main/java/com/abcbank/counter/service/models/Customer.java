@@ -1,8 +1,5 @@
 package com.abcbank.counter.service.models;
 
-import com.abcbank.counter.service.models.Address;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,10 +11,10 @@ public class Customer {
 	Long customerId;
 
 	@Column(name = "Name")
-	String  name;
+	String name;
 
 	@Column(name = "PHNO")
-	String  phNo;
+	String phNo;
 
 	public String getName() {
 		return name;
