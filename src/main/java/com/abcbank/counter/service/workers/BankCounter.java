@@ -130,9 +130,11 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 				if (tokenQue.isEmpty()) {
 					Thread.sleep(5000);
 				} else {
-					for (Token token : tokenQue) {
+					while (!tokenQue.isEmpty()){
+						Token token = tokenQue.poll();
 						serve(token);
 					}
+
 				}
 			}
 		} catch (Exception ex) {

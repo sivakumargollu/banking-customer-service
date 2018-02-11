@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 @Component
@@ -105,6 +106,8 @@ public class BankCounterManager implements Runnable {
 		for (BankCounter bankCounter : bankCounters) {
 			bankCounter.setTokenQue(new PriorityQueue<Token>());
 		}
+		startCounters();
+
 	}
 
 	public void startCounters() {
@@ -120,6 +123,7 @@ public class BankCounterManager implements Runnable {
 
 	@Override
 	public void run() {
+		List<TokenStatus> allowedStatus = Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED);
 		while (true) {
 			if (waitingTokens.isEmpty()) {
 				try {
@@ -130,7 +134,7 @@ public class BankCounterManager implements Runnable {
 			} else {
 				while (waitingTokens.size() > 0) {
 					Token token = waitingTokens.pollFirst();
-					if (Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED).contains(token.getStatus())) {
+					if (allowedStatus.contains(token.getStatus())) {
 						assignCounter(token);
 					}
 				}

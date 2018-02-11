@@ -33,7 +33,7 @@ public class TokenXCounter {
 	@Column(name = "TokenStatus")
 	TokenStatus tokenStatus;
 
-	@Column(name = "updateTime", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	@Column(name = "updateTime", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
 	DateTime updatedTime;
 
 	public Long getId() {

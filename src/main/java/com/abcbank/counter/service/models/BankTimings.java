@@ -1,25 +1,36 @@
 package com.abcbank.counter.service.models;
 
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
+@Component
+@Configuration
+@PropertySource("classpath:bankconfig.properties")
 class BankTimings {
 
-	DateTime startTime;
-	DateTime closingTime;
+	//Time 24 hours format
+	@Value("${bank-open-hour}")
+	Integer startTime;
 
-	public DateTime getStartTime() {
+	@Value("${bank-closing-hour}")
+	Integer closingTime;
+
+	public Integer getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(DateTime startTime) {
+	public void setStartTime(Integer startTime) {
 		this.startTime = startTime;
 	}
 
-	public DateTime getClosingTime() {
+	public Integer getClosingTime() {
 		return closingTime;
 	}
 
-	public void setClosingTime(DateTime closingTime) {
+	public void setClosingTime(Integer closingTime) {
 		this.closingTime = closingTime;
 	}
 }
