@@ -4,6 +4,7 @@ import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.models.TokenXCounter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
@@ -131,8 +132,6 @@ public class BankCounterManager implements Runnable {
 					Token token = waitingTokens.pollFirst();
 					if (Arrays.asList(TokenStatus.NEW, TokenStatus.FORWARDED).contains(token.getStatus())) {
 						assignCounter(token);
-					} else {
-						//update status in DB
 					}
 				}
 			}

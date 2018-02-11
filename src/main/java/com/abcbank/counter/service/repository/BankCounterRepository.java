@@ -4,6 +4,7 @@ import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.models.TokenXCounter;
 import com.abcbank.counter.service.workers.BankCounter;
 import com.abcbank.counter.service.workers.BankCounterManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,11 @@ public class BankCounterRepository {
 
 	public void addToken(Token token) {
 		bankCounterManager.addWaitingToken(token);
+	}
+
+	public TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter){
+		bankCounterDAO.updateTokenCounterStatus(tokenXCounter);
+		return tokenXCounter;
 	}
 
 	public List<BankCounter> getCounterStatus() {
