@@ -5,6 +5,9 @@ import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.OperatorDetails;
 import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.repository.BankCounterDAO;
+import com.abcbank.counter.service.repository.BankCounterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
@@ -24,6 +27,9 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 
 	@Autowired
 	BankCounterManager bankCounterManager;
+
+	@Autowired
+	BankCounterRepository bankCounterRepository;
 
 	public String getCounterId() {
 		return counterId;
@@ -90,8 +96,12 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 			if (token.getActionItems().size() > 0) {
 				token.setStatus(TokenStatus.FORWARDED);
 				bankCounterManager.addWaitingToken(token);
+				TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, TokenStatus.FORWARDED);
 			} else {
 				token.setStatus(TokenStatus.COMPLETED);
+				TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, TokenStatus.COMPLETED);
+				bankCounterRepository.updateTokenCounterStatus(tokenXCounter);
+
 			}
 
 		} catch (InterruptedException ie) {
@@ -116,14 +126,17 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 	@Override
 	public void run() {
 		try {
-			while (tokenQue.isEmpty()) {
-				Thread.sleep(5000);
+			while (true) {
+				if (tokenQue.isEmpty()) {
+					Thread.sleep(5000);
+				} else {
+					for (Token token : tokenQue) {
+						serve(token);
+					}
+				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error while starting counter ", ex);
-		}
-		for (Token token : tokenQue) {
-			serve(token);
 		}
 	}
 }

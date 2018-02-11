@@ -2,6 +2,7 @@ package com.abcbank.counter.service.repository;
 
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.models.TokenXCounter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -39,12 +40,21 @@ public class H2DBAdapter implements DBAdapter<Session> {
 
 	@Override
 	public Token saveToken(Token token) {
-		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-		Session session = sessionFactory.openSession();
+		Session session = getConnection(true);
 		session.beginTransaction();
 		session.save(token);
 		session.getTransaction().commit();
 		session.close();
 		return token;
+	}
+
+	@Override
+	public TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		session.save(tokenXCounter);
+		session.getTransaction().commit();
+		session.close();
+		return tokenXCounter;
 	}
 }
