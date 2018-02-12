@@ -6,7 +6,6 @@ import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.OperatorDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
-import com.abcbank.counter.service.repository.BankCounterDAO;
 import com.abcbank.counter.service.repository.BankCounterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.PriorityQueue;
 
 @Component
-public class BankCounter implements Comparable<BankCounter>, Runnable {
+public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable {
 
 	BankService[]   availableServices;
 	CounterStatus   status;
@@ -30,6 +29,22 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 
 	@Autowired
 	BankCounterRepository bankCounterRepository;
+
+	public BankCounterManager getBankCounterManager() {
+		return bankCounterManager;
+	}
+
+	public void setBankCounterManager(BankCounterManager bankCounterManager) {
+		this.bankCounterManager = bankCounterManager;
+	}
+
+	public BankCounterRepository getBankCounterRepository() {
+		return bankCounterRepository;
+	}
+
+	public void setBankCounterRepository(BankCounterRepository bankCounterRepository) {
+		this.bankCounterRepository = bankCounterRepository;
+	}
 
 	public String getCounterId() {
 		return counterId;

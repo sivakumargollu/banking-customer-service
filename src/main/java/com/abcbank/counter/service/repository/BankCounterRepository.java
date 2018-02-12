@@ -19,9 +19,6 @@ public class BankCounterRepository {
 	@Autowired
 	BankCounterDAO bankCounterDAO;
 
-	@Autowired
-	BankCounterManager bankCounterManager;
-
 	public BankCounterRepository() {
 
 	}
@@ -37,25 +34,12 @@ public class BankCounterRepository {
 		BankService requestedService = customerDetails.getBankService();
 		Token token = new Token(customerId, priority, requestedService);
 		bankCounterDAO.saveToken(token);
+		token.setTokenId(token.getPriority().name() + "-" + token.getId());
 		return token;
-	}
-
-	public void addToken(Token token) {
-		bankCounterManager.addWaitingToken(token);
 	}
 
 	public TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter){
 		bankCounterDAO.updateTokenCounterStatus(tokenXCounter);
 		return tokenXCounter;
 	}
-
-	public List<BankCounter> getCounterStatus() {
-		ArrayList<BankCounter> counters = new ArrayList<>();
-		if (bankCounterManager != null) {
-			return new ArrayList<BankCounter>(bankCounterManager.getBankCounters());
-		} else {
-			return counters;
-		}
-	}
-
 }

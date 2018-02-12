@@ -17,11 +17,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 @Component
 @Configuration
@@ -66,11 +64,11 @@ public class BankCounterManager implements Runnable {
 	public BankCounterManager(String counterResourceFile) {
 		this.counterResourceFile = counterResourceFile;
 		waitingTokens = new LinkedList<Token>();
-		intializeCounters();
+		//intializeCounters();
 	}
 
 	public BankCounterManager() {
-
+		waitingTokens = new LinkedList<Token>();
 	}
 
 	public void assignCounter(Token token) {
@@ -86,7 +84,8 @@ public class BankCounterManager implements Runnable {
 			serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
 		}
 		token.setServeTime(DateTime.now().plus(serveTime));
-		counter.getTokenQue().add(token);
+		q.add(token);
+		counter.setTokenQue(q);
 		bankCounters.add(counter);
 	}
 
@@ -139,6 +138,15 @@ public class BankCounterManager implements Runnable {
 					}
 				}
 			}
+		}
+	}
+
+	public List<BankCounter> getCounterStatus() {
+		ArrayList<BankCounter> counters = new ArrayList<>();
+		if (getBankCounters() != null) {
+			return new ArrayList<BankCounter>(getBankCounters());
+		} else {
+			return counters;
 		}
 	}
 }

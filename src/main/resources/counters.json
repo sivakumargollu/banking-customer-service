@@ -7,7 +7,7 @@
     ],
     "status":"AVAILABLE",
     "operatorDetails":{
-      "id":"22334455",
+      "operatorId":"22334455",
       "role":"SINGLE_WINDOW_OPERATOR",
       "accessPreviliages":{
         "token":[
@@ -25,7 +25,7 @@
     ],
     "status":"AVAILABLE",
     "operatorDetails":{
-      "id":"11223344",
+      "operatorId":"11223344",
       "role":"SINGLE_WINDOW_OPERATOR",
       "accessPreviliages":{
         "token":[
@@ -43,7 +43,7 @@
     ],
     "status":"AVAILABLE",
     "operatorDetails":{
-      "id":"1234567",
+      "operatorId":"1234567",
       "role":"SINGLE_WINDOW_OPERATOR",
       "accessPreviliages":{
         "token":[
@@ -63,7 +63,7 @@
     ],
     "status":"AVAILABLE",
     "operatorDetails":{
-      "id":"1111111",
+      "operatorId":"1111111",
       "role":"MANAGER",
       "accessPreviliages":{
         "token":[

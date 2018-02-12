@@ -4,6 +4,7 @@ import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.repository.BankCounterRepository;
 import com.abcbank.counter.service.workers.BankCounter;
+import com.abcbank.counter.service.workers.BankCounterManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,9 @@ public class BankCounterService {
 	@Autowired
 	BankCounterRepository bankCounterRepository;
 
+	@Autowired
+	BankCounterManager bankCounterManager;
+
 	@RequestMapping(value = "/token/new", method = RequestMethod.POST)
 	@ResponseBody
 	public Token createToken(@RequestBody CustomerDetails customerDetails) {
@@ -25,12 +29,12 @@ public class BankCounterService {
 			bankCounterRepository.saveCustomerDetails(customerDetails);
 		}
 		Token token = bankCounterRepository.createToken(customerDetails);
-		bankCounterRepository.addToken(token);
+		bankCounterManager.addWaitingToken(token);
 		return token;
 	}
 
 	@RequestMapping(value = "/counter/status", method = RequestMethod.GET)
 	public List<BankCounter> updateToken() {
-		return bankCounterRepository.getCounterStatus();
+		return bankCounterManager.getCounterStatus();
 	}
 }
