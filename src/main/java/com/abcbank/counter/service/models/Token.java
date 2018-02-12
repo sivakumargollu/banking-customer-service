@@ -61,7 +61,7 @@ public class Token implements Comparable<Token> {
 
 	}
 
-	public Token(Long customerId, Priority priority, BankService reqService) {
+	public 	Token(Long customerId, Priority priority, BankService reqService) {
 		this.customerId = customerId;
 		this.priority = priority;
 		this.reqService = reqService;
