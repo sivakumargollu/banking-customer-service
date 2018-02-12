@@ -112,6 +112,7 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 				token.setStatus(TokenStatus.FORWARDED);
 				bankCounterManager.addWaitingToken(token);
 				TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, TokenStatus.FORWARDED);
+				bankCounterRepository.updateTokenCounterStatus(tokenXCounter);
 			} else {
 				token.setStatus(TokenStatus.COMPLETED);
 				TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, TokenStatus.COMPLETED);

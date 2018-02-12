@@ -3,10 +3,13 @@ package com.abcbank.counter.service.repository;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class H2DBAdapter implements DBAdapter<Session> {
@@ -56,5 +59,15 @@ public class H2DBAdapter implements DBAdapter<Session> {
 		session.getTransaction().commit();
 		session.close();
 		return tokenXCounter;
+	}
+
+	@Override
+	public List<TokenXCounter> getTokenStatus(Long tokenId) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		String hql = "FROM TokenXCounter where tokenId =:tokenId";
+		Query query = session.createQuery(hql);
+		query.setParameter("tokenId", tokenId);
+		return query.list();
 	}
 }

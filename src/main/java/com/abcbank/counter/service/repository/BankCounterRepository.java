@@ -35,11 +35,16 @@ public class BankCounterRepository {
 		Token token = new Token(customerId, priority, requestedService);
 		bankCounterDAO.saveToken(token);
 		token.setTokenId(token.getPriority().name() + "-" + token.getId());
+		bankCounterDAO.saveToken(token);
 		return token;
 	}
 
 	public TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter){
 		bankCounterDAO.updateTokenCounterStatus(tokenXCounter);
 		return tokenXCounter;
+	}
+
+	public List<TokenXCounter> getTokenStatus(Long tokenId){
+		return bankCounterDAO.getTokenStatus(tokenId);
 	}
 }

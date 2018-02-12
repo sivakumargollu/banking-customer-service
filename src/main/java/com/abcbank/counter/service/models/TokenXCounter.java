@@ -5,8 +5,8 @@ import org.joda.time.DateTime;
 
 import javax.persistence.*;
 
-@Table(name = "TokenXCounterStatus")
 @Entity
+@Table(name = "TokenXCounter")
 public class TokenXCounter {
 
 	public TokenXCounter(Long tokenId, String counterId, TokenStatus tokenStatus) {

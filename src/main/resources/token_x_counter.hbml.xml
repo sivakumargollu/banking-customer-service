@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.abcbank.counter.service.models.TokenXCounter" table="TokenXCounter">
+        <operatorId name="id" type="int" column="Id">
+            <generator class="native"/>
+        </operatorId>
+        <property name="tokenId" column="TOKENID" type="string"/>
+        <property name="counterId" column="COUNTERID" type="int"/>
+        <property name="tokenStatus" column="TOKEN_STATUS" type="int"/>
+    </class>
+</hibernate-mapping>

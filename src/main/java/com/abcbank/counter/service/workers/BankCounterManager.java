@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Configuration
@@ -148,5 +149,8 @@ public class BankCounterManager implements Runnable {
 		} else {
 			return counters;
 		}
+	}
+	public List<BankCounter> getCounterStatus(String counterID) {
+		return getBankCounters().stream().filter(bankCounter -> bankCounter.getCounterId().equals(counterID)).collect(Collectors.toList());
 	}
 }

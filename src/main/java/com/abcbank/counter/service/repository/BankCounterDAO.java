@@ -6,6 +6,8 @@ import com.abcbank.counter.service.models.TokenXCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class BankCounterDAO {
 
@@ -25,5 +27,9 @@ public class BankCounterDAO {
 		dbAdapter.updateTokenCounterStatus(tokenXCounter);
 		return tokenXCounter;
 	}
+	public List<TokenXCounter> getTokenStatus(Long tokenId){
+         return dbAdapter.getTokenStatus(tokenId);
+	}
+
 
 }
