@@ -29,6 +29,7 @@ public class TokenXCounter {
 	@Column(name = "CounterId")
 	String counterId;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "TokenStatus")
 	TokenStatus tokenStatus;
 
