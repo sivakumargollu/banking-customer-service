@@ -29,7 +29,6 @@ public class TokenXCounter {
 	@Column(name = "CounterId")
 	String counterId;
 
-	@Enumerated
 	@Column(name = "TokenStatus")
 	TokenStatus tokenStatus;
 

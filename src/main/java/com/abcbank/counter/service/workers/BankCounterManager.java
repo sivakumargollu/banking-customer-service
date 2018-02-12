@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -76,18 +77,23 @@ public class BankCounterManager implements Runnable {
 		if (bankCounters == null) {
 			intializeCounters();
 		}
-		BankCounter counter = bankCounters.poll();
-		PriorityQueue<Token> q = counter.getTokenQue();
-		BankService service = token.getActionItems().pollFirst();
-		token.setReqService(service);
-		long serveTime = q.size() * service.getAvgTimeRequiredInMin() * 60000; //into milli seconds
-		if (token.getPriority().equals(Priority.PREMIUM)) {
-			serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
+
+		BankService reqService = token.getActionItems().pollFirst();
+		//Looping through all counters to find the one which can serve the current token
+		for (BankCounter counter : bankCounters) {
+			if(Arrays.asList(counter.getAvailableServices()).contains(reqService)){
+				//Got a counter
+				PriorityQueue<Token> q = counter.getTokenQue();
+				token.setReqService(reqService);
+				long serveTime = q.size() * reqService.getAvgTimeRequiredInMin() * 60000; //into milli seconds
+				if (token.getPriority().equals(Priority.PREMIUM)) {
+					serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
+				}
+				token.setServeTime(DateTime.now().plus(serveTime));
+				q.add(token);
+				counter.setTokenQue(q);
+			}
 		}
-		token.setServeTime(DateTime.now().plus(serveTime));
-		q.add(token);
-		counter.setTokenQue(q);
-		bankCounters.add(counter);
 	}
 
 	public void intializeCounters() {

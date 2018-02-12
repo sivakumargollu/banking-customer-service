@@ -59,7 +59,10 @@
       "DEPOSIT",
       "WITHDRAW",
       "ACC_STMT",
-      "ATM_SERVICES"
+      "ATM_SERVICES",
+      "PASSBOOK",
+      "REGISTRATION",
+      "ACC_OPEN"
     ],
     "status":"AVAILABLE",
     "operatorDetails":{
