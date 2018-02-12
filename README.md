@@ -2,7 +2,7 @@
 
 Serve the customer based priority factor configured in bankconfig.props
  
-Servetime (attribute in Token class )is the main factor which brings the PREMIUM customers to be serve first. 
+Servetime (attribute in Token class )is the main factor which brings the PREMIUM customers to be serve first. It's value derived from above priority ration configured in props file
 
 Priority Queues maintain at Individual counters (BankCounter), New token will be alloted based on minimum expecting time i.e counter which have minimum que and  providing requested service
 
