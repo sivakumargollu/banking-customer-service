@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+**/target/*
+.idea
+*.iml
+=======
 target/
 !.mvn/wrapper/maven-wrapper.jar
 mvnw.cmd
@@ -25,3 +30,4 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+>>>>>>> 00885f65fd4e5fcc2fdfd1e310c12dfd181b70df
