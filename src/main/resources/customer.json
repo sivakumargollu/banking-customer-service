@@ -1,0 +1,32 @@
+[ {
+  "priority":"PREMIUM",
+  "bankService":"DEPOSIT",
+  "customerId":12345,
+  "newCustomer":true,
+  "customer":{
+    "id":123456,
+    "name":"Siva Kumar",
+    "phNo":"99889988778",
+    "address":{
+      "city":"Kaikalur",
+      "zipCode":"34343434"
+    }
+  }
+},
+
+{
+  "priority":"REGULAR",
+  "bankService":"ACC_OPEN",
+  "customerId":123456,
+  "customer":{
+    "id":123456,
+    "name":"Siva Kumar",
+    "phNo":"99889988778",
+    "address":{
+      "city":"Kaikalur",
+      "zipCode":"34343434"
+    }
+  },
+  "newCustomer":true
+}
+]
