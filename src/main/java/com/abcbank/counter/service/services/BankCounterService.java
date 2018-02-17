@@ -30,7 +30,6 @@ public class BankCounterService {
 			bankCounterRepository.saveCustomerDetails(customerDetails);
 		}
 		Token token = bankCounterRepository.createToken(customerDetails);
-		bankCounterManager.addWaitingToken(token);
 		return token;
 	}
 

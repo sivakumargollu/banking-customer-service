@@ -5,6 +5,7 @@ import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.repository.BankCounterRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
@@ -36,6 +37,9 @@ public class BankCounterManager implements Runnable {
 
 	@Value("${priority-factor}")
 	String priorityFactor;
+
+	@Autowired
+	BankCounterRepository bankCounterRepository;
 
 	public LinkedList<Token> getWaitingTokens() {
 		return waitingTokens;
@@ -134,6 +138,7 @@ public class BankCounterManager implements Runnable {
 			if (waitingTokens.isEmpty()) {
 				try {
 					Thread.sleep(5000);
+					refresh();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -158,5 +163,11 @@ public class BankCounterManager implements Runnable {
 	}
 	public List<BankCounter> getCounterStatus(String counterID) {
 		return getBankCounters().stream().filter(bankCounter -> bankCounter.getCounterId().equals(counterID)).collect(Collectors.toList());
+	}
+
+	//Lookup for new tokens
+	public void refresh() {
+		List<Token> tokenList = bankCounterRepository.readTokens(TokenStatus.NEW);
+		waitingTokens.addAll(tokenList);
 	}
 }

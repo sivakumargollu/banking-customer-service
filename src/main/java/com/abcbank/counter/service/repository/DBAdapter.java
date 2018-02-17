@@ -1,5 +1,6 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
@@ -17,5 +18,7 @@ public interface DBAdapter<T> {
 	TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter);
 
 	List<TokenXCounter> getTokenStatus(Long tokenId);
+
+	List<Token> readTokens(TokenStatus status);
 
 }

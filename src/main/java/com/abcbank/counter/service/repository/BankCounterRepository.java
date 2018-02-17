@@ -2,6 +2,7 @@ package com.abcbank.counter.service.repository;
 
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
+import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
@@ -46,5 +47,9 @@ public class BankCounterRepository {
 
 	public List<TokenXCounter> getTokenStatus(Long tokenId){
 		return bankCounterDAO.getTokenStatus(tokenId);
+	}
+
+	public List<Token> readTokens(TokenStatus tokenStatus){
+		return bankCounterDAO.readTokens(tokenStatus);
 	}
 }

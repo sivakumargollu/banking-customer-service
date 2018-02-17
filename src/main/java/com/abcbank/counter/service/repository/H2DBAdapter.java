@@ -1,5 +1,6 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
@@ -10,6 +11,7 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class H2DBAdapter implements DBAdapter<Session> {
@@ -69,5 +71,17 @@ public class H2DBAdapter implements DBAdapter<Session> {
 		Query query = session.createQuery(hql);
 		query.setParameter("tokenId", tokenId);
 		return query.list();
+	}
+
+	@Override
+	public List<Token> readTokens(TokenStatus status) {
+
+		Session session = getConnection(true);
+		session.beginTransaction();
+		String hql = "FROM Token";
+		Query query = session.createQuery(hql);
+		List<Token> tokens =  query.list();
+		return tokens.stream().filter(token -> token.getStatus() != null
+				&& token.getStatus().equals(status)).collect(Collectors.toList());
 	}
 }
