@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 @Component
@@ -29,8 +30,8 @@ import java.util.stream.Collectors;
 @PropertySource("classpath:bankconfig.properties")
 public class BankCounterManager implements Runnable {
 
-	PriorityQueue<BankCounter> bankCounters;
-	LinkedList<Token>          waitingTokens;
+	PriorityQueue<BankCounter>   bankCounters;
+	ConcurrentLinkedQueue<Token> waitingTokens;
 
 	@Value("${bankcounter-resource}")
 	String counterResourceFile;
@@ -41,11 +42,11 @@ public class BankCounterManager implements Runnable {
 	@Autowired
 	BankCounterRepository bankCounterRepository;
 
-	public LinkedList<Token> getWaitingTokens() {
+	public ConcurrentLinkedQueue<Token> getWaitingTokens() {
 		return waitingTokens;
 	}
 
-	public void setWaitingTokens(LinkedList<Token> waitingTokens) {
+	public void setWaitingTokens(ConcurrentLinkedQueue<Token> waitingTokens) {
 		this.waitingTokens = waitingTokens;
 	}
 
@@ -69,12 +70,12 @@ public class BankCounterManager implements Runnable {
 
 	public BankCounterManager(String counterResourceFile) {
 		this.counterResourceFile = counterResourceFile;
-		waitingTokens = new LinkedList<Token>();
+		waitingTokens = new ConcurrentLinkedQueue<Token>();
 		//intializeCounters();
 	}
 
 	public BankCounterManager() {
-		waitingTokens = new LinkedList<Token>();
+		waitingTokens = new ConcurrentLinkedQueue<Token>();
 	}
 
 	public void assignCounter(Token token) {
@@ -144,7 +145,7 @@ public class BankCounterManager implements Runnable {
 				}
 			} else {
 				while (waitingTokens.size() > 0) {
-					Token token = waitingTokens.pollFirst();
+					Token token = waitingTokens.poll();
 					if (allowedStatus.contains(token.getStatus())) {
 						assignCounter(token);
 					}
