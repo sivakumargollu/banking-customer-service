@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,16 @@ public class H2DBAdapter implements DBAdapter<Session> {
 	}
 
 	@Override
+	public Token updateToken(Token token) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		session.update(token);
+		session.getTransaction().commit();
+		session.close();
+		return token;
+	}
+
+	@Override
 	public TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter) {
 		Session session = getConnection(true);
 		session.beginTransaction();
@@ -75,13 +86,16 @@ public class H2DBAdapter implements DBAdapter<Session> {
 
 	@Override
 	public List<Token> readTokens(TokenStatus status) {
-
 		Session session = getConnection(true);
 		session.beginTransaction();
-		String hql = "FROM Token";
+		String hql = "FROM Token ";
 		Query query = session.createQuery(hql);
-		List<Token> tokens =  query.list();
-		return tokens.stream().filter(token -> token.getStatus() != null
-				&& token.getStatus().equals(status)).collect(Collectors.toList());
+		List<Token> retTokens = new ArrayList<>();
+		for (Token token : (List<Token>) query.list()) {
+			if(token != null && token.getStatus().equals(status)){
+				retTokens.add(token);
+			}
+		}
+		return retTokens;
 	}
 }

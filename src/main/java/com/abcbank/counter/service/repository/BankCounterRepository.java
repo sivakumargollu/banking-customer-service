@@ -36,7 +36,12 @@ public class BankCounterRepository {
 		Token token = new Token(customerId, priority, requestedService);
 		bankCounterDAO.saveToken(token);
 		token.setTokenId(token.getPriority().name() + "-" + token.getId());
-		bankCounterDAO.saveToken(token);
+		bankCounterDAO.updateToken(token);
+		return token;
+	}
+
+	public Token updateToken(Token token) {
+		bankCounterDAO.updateToken(token);
 		return token;
 	}
 

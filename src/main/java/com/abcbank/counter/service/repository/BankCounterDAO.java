@@ -24,6 +24,11 @@ public class BankCounterDAO {
 		return token;
 	}
 
+	public Token updateToken(Token token) {
+		dbAdapter.updateToken(token);
+		return token;
+	}
+
 	public TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter){
 		dbAdapter.updateTokenCounterStatus(tokenXCounter);
 		return tokenXCounter;

@@ -4,10 +4,13 @@ import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.MultiCounterServices;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
+import org.hibernate.annotations.CreationTimestamp;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "TOKEN")
@@ -30,16 +33,22 @@ public class Token implements Comparable<Token> {
 	@Enumerated
 	BankService reqService;
 
-	DateTime serveTime;
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
+	Date serveTime;
 
-	@Column(name = "CREATED_TIME", nullable = true, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
-	DateTime createdTime;
+	@Column
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	Date createdTime;
 
 	@Column(name = "TOKEN_STATUS")
 	@Enumerated(EnumType.STRING)
 	TokenStatus status;
 
-	LinkedList<BankService> actionItems;
+	@Column
+	@ElementCollection
+	List<BankService> actionItems;
 
 	public TokenStatus getStatus() {
 		return status;
@@ -49,8 +58,8 @@ public class Token implements Comparable<Token> {
 		this.status = status;
 	}
 
-	public LinkedList<BankService> getActionItems() {
-		return actionItems;
+	public List<BankService> getActionItems() {
+		return  actionItems;
 	}
 
 	public void setActionItems(LinkedList<BankService> actionItems) {
@@ -84,7 +93,7 @@ public class Token implements Comparable<Token> {
 			}
 		}
 
-		return actionItems;
+		return (LinkedList<BankService>) actionItems;
 	}
 
 	public Long getId() {
@@ -127,27 +136,28 @@ public class Token implements Comparable<Token> {
 		this.reqService = requestedService;
 	}
 
-	public DateTime getServeTime() {
+	public Date getServeTime() {
 		return serveTime;
 	}
 
-	public void setServeTime(DateTime serveTime) {
+	public void setServeTime(Date serveTime) {
 		this.serveTime = serveTime;
 	}
 
-	public DateTime getCreatedTime() {
+	public Date getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(DateTime createdTime) {
+	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
 
 	@Override
 	public int compareTo(Token o) {
-		if (o.serveTime.isAfter(this.serveTime)) {
+		DateTime thatServeTime = new DateTime(o.getServeTime());
+		if (thatServeTime.isAfter(new DateTime(this.serveTime))) {
 			return -1;
-		} else if (o.serveTime.isBefore(this.serveTime)) {
+		} else if (thatServeTime.isBefore(new DateTime(this.serveTime))) {
 			return 1;
 		} else {
 			return 0;

@@ -15,6 +15,8 @@ public interface DBAdapter<T> {
 
 	Token saveToken(Token token);
 
+	Token updateToken(Token token);
+
 	TokenXCounter updateTokenCounterStatus(TokenXCounter tokenXCounter);
 
 	List<TokenXCounter> getTokenStatus(Long tokenId);

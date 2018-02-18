@@ -29,8 +29,7 @@ public class BankCounterService {
 		if (customerDetails.isNewCustomer()) {
 			bankCounterRepository.saveCustomerDetails(customerDetails);
 		}
-		Token token = bankCounterRepository.createToken(customerDetails);
-		return token;
+		return bankCounterRepository.createToken(customerDetails);
 	}
 
 	@RequestMapping(value = "/counter/status", method = RequestMethod.GET)

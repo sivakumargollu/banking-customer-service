@@ -6,6 +6,7 @@ import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.OperatorDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.repository.BankCounterDAO;
 import com.abcbank.counter.service.repository.BankCounterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -102,7 +103,7 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 		this.status = status;
 	}
 
-	public void serve(Token token) {
+	public Token serve(Token token) {
 		try {
 			BankService service = token.getReqService();
 			logger.info("Serving token at " + operatorDetails.toString() + ", Service type " + token.getReqService().name());
@@ -110,20 +111,13 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 			this.status = CounterStatus.AVAILABLE;
 			if (token.getActionItems().size() > 0) {
 				token.setStatus(TokenStatus.FORWARDED);
-				bankCounterManager.addWaitingToken(token);
-				TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, TokenStatus.FORWARDED);
-				bankCounterRepository.updateTokenCounterStatus(tokenXCounter);
 			} else {
 				token.setStatus(TokenStatus.COMPLETED);
-				TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, TokenStatus.COMPLETED);
-				bankCounterRepository.updateTokenCounterStatus(tokenXCounter);
-
 			}
-
 		} catch (InterruptedException ie) {
 			logger.error(ie.getStackTrace().toString());
 		}
-
+         return token;
 	}
 
 	@Override
@@ -147,8 +141,13 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 					Thread.sleep(5000);
 				} else {
 					while (!tokenQue.isEmpty()){
-						Token token = tokenQue.poll();
-						serve(token);
+						Token token = serve(tokenQue.poll());
+						TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, token.getStatus());
+						bankCounterRepository.updateTokenCounterStatus(tokenXCounter);
+						bankCounterRepository.updateToken(token);
+						if(token.getStatus().equals(TokenStatus.FORWARDED)){
+							bankCounterManager.addWaitingToken(token);
+						}
 					}
 
 				}

@@ -2,6 +2,7 @@ package com.abcbank.counter.service;
 
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
+import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.*;
 import com.abcbank.counter.service.repository.DBAdapter;
 import com.abcbank.counter.service.services.BankCounterService;
@@ -110,6 +111,36 @@ public class BankCounterServiceApplicationTests {
 		List<BankCounter> counterList = bankCounterService.counterStatus("ABCBANK-B1-C3");
 		Assert.assertTrue(counterList != null);
 		Assert.assertTrue(counterList.size() == 1);
+
+	}
+
+
+	@Test
+	public void shouldReturnTokenList() {
+
+		Customer customer = new Customer();
+		customer.setCustomerId(1234l);
+		customer.setPhNo("9999999");
+		customer.setName("SivaKumar");
+
+		Address address = new Address();
+		address.setZipCode("1234567");
+		address.setCity("KAIKALUR");
+
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setCustomer(customer);
+		customerDetails.setAddress(address);
+		customerDetails.setPriority(Priority.REGULAR);
+		customerDetails.setBankService(BankService.ACC_OPEN);
+		customerDetails.setNewCustomer(true);
+
+		Token token = bankCounterService.createToken(customerDetails);
+		Assert.assertTrue(token != null);
+		Assert.assertTrue(token.getId() > 0)	;
+
+		List<Token> tokenList = dbAdapter.readTokens(TokenStatus.NEW);
+		Assert.assertTrue(tokenList != null);
+		Assert.assertTrue(tokenList.size() > 0);
 
 	}
 }

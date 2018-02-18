@@ -1,9 +1,10 @@
 package com.abcbank.counter.service.models;
 
 import com.abcbank.counter.service.enums.TokenStatus;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "TokenXCounter")
@@ -33,8 +34,9 @@ public class TokenXCounter {
 	@Column(name = "TokenStatus")
 	TokenStatus tokenStatus;
 
-	@Column(name = "updateTime", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
-	DateTime updatedTime;
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedTime;
 
 	public Long getId() {
 		return Id;
@@ -68,11 +70,11 @@ public class TokenXCounter {
 		this.tokenStatus = tokenStatus;
 	}
 
-	public DateTime getUpdatedTime() {
+	public Date getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(DateTime updatedTime) {
+	public void setUpdatedTime(Date updatedTime) {
 		this.updatedTime = updatedTime;
 	}
 }

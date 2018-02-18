@@ -82,7 +82,7 @@ public class BankCounterManager implements Runnable {
 			intializeCounters();
 		}
 
-		BankService reqService = token.getActionItems().pollFirst();
+		BankService reqService = ((LinkedList<BankService>)token.getActionItems()).pollFirst();
 		//Looping through all counters to find the one which can serve the current token
 		for (BankCounter counter : bankCounters) {
 			if(Arrays.asList(counter.getAvailableServices()).contains(reqService)){
@@ -93,7 +93,7 @@ public class BankCounterManager implements Runnable {
 				if (token.getPriority().equals(Priority.PREMIUM)) {
 					serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
 				}
-				token.setServeTime(DateTime.now().plus(serveTime));
+				token.setServeTime(new Date(DateTime.now().plus(serveTime).getMillis()));
 				q.add(token);
 				counter.setTokenQue(q);
 			}
