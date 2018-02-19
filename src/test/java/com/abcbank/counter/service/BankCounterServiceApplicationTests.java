@@ -141,6 +141,13 @@ public class BankCounterServiceApplicationTests {
 		List<Token> tokenList = dbAdapter.readTokens(TokenStatus.NEW);
 		Assert.assertTrue(tokenList != null);
 		Assert.assertTrue(tokenList.size() > 0);
+	}
+
+	@Test
+	public void getCounterStatus() {
+		List<BankCounter> counterList = bankCounterService.counterStatus(null);
+		Assert.assertTrue(counterList != null);
+		Assert.assertTrue(counterList.size() > 0);
 
 	}
 }

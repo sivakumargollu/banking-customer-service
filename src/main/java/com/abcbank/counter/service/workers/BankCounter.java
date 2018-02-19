@@ -26,9 +26,11 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 	String          counterId;
 	Long refreshIntraval;
 
+	@JsonIgnore
 	@Autowired
 	BankCounterManager bankCounterManager;
 
+	@JsonIgnore
 	@Autowired
 	BankCounterRepository bankCounterRepository;
 
