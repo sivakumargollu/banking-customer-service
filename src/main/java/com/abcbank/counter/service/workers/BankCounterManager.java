@@ -83,7 +83,8 @@ public class BankCounterManager implements Runnable {
 			intializeCounters();
 		}
 
-		BankService reqService = ((LinkedList<BankService>)token.getActionItems()).pollFirst();
+		LinkedList<BankService> itemList  = new LinkedList<BankService>(token.getActionItems());
+		BankService reqService = itemList.pollFirst();
 		//Looping through all counters to find the one which can serve the current token
 		for (BankCounter counter : bankCounters) {
 			if(Arrays.asList(counter.getAvailableServices()).contains(reqService)){
@@ -99,6 +100,7 @@ public class BankCounterManager implements Runnable {
 				counter.setTokenQue(q);
 			}
 		}
+		token.setActionItems(itemList);
 	}
 
 	public void intializeCounters() {

@@ -8,13 +8,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 @Table(name = "TOKEN")
-public class Token implements Comparable<Token> {
+public class Token implements Comparable<Token>, Cloneable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -162,5 +163,17 @@ public class Token implements Comparable<Token> {
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public Token clone() {
+		Token token =  new Token(this.customerId, this.priority, this.reqService);
+		token.setStatus(this.status);
+		token.setActionItems(new LinkedList<>(this.getActionItems()));
+		token.setServeTime(this.serveTime);
+		token.setCreatedTime(this.createdTime);
+		token.setId(this.getId());
+		token.setCustomerId(this.getCustomerId());
+		return token;
 	}
 }
