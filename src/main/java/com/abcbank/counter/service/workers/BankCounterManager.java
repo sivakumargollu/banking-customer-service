@@ -94,9 +94,8 @@ public class BankCounterManager implements Runnable {
 		LinkedList<BankService> itemList  = new LinkedList<BankService>(token.getActionItems());
 		BankService reqService = itemList.pollFirst();
 		//Looping through all counters to find the one which can serve the current token
-		boolean isAssigned = false;
 		for (BankCounter counter : bankCounters) {
-			if(Arrays.asList(counter.getAvailableServices()).contains(reqService) && !isAssigned){
+			if(Arrays.asList(counter.getAvailableServices()).contains(reqService) ){
 				//Got a counter
 				PriorityQueue<Token> q = counter.getTokenQue();
 				token.setReqService(reqService);
@@ -107,7 +106,7 @@ public class BankCounterManager implements Runnable {
 				token.setServeTime(new Date(DateTime.now().plus(serveTime).getMillis()));
 				q.add(token);
 				counter.setTokenQue(q);
-				isAssigned = true;
+				break;
 			}
 		}
 		token.setActionItems(itemList);
