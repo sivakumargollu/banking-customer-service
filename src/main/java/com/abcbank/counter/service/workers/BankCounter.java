@@ -66,7 +66,6 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 		this.refreshIntraval = refreshIntraval;
 	}
 
-	@JsonIgnore
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	PriorityQueue<Token> tokenQue;
 

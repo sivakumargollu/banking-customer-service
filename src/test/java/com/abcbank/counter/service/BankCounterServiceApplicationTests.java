@@ -144,10 +144,41 @@ public class BankCounterServiceApplicationTests {
 	}
 
 	@Test
-	public void getCounterStatus() {
-		List<BankCounter> counterList = bankCounterService.counterStatus(null);
+	public void tokenShoulAllotToCounter() throws InterruptedException {
+		Customer customer = new Customer();
+		customer.setCustomerId(1234l);
+		customer.setPhNo("9999999");
+		customer.setName("SivaKumar");
+
+		Address address = new Address();
+		address.setZipCode("1234567");
+		address.setCity("KAIKALUR");
+
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setCustomer(customer);
+		customerDetails.setAddress(address);
+		customerDetails.setPriority(Priority.REGULAR);
+		customerDetails.setBankService(BankService.REGISTRATION);
+		customerDetails.setNewCustomer(true);
+
+		Token token = bankCounterService.createToken(customerDetails);
+		Assert.assertTrue(token != null);
+		Assert.assertTrue(token.getId() > 0)	;
+
+		List<BankCounter> counterList = bankCounterService.counterStatus("ABCBANK-B1-C4");
 		Assert.assertTrue(counterList != null);
 		Assert.assertTrue(counterList.size() > 0);
+		boolean counterAssigned = false;
+		BankCounter counter = counterList.get(0);
+		for (int i=0; i< 50; i++){
+			Thread.sleep(1000);
+			counterAssigned = counter.getTokenQue().size() > 0;
+			if(counterAssigned){
+				break;
+			}
+		}
+		Assert.assertTrue(counterAssigned);
+
 
 	}
 }
