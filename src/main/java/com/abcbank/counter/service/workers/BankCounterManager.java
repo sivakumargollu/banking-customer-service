@@ -104,6 +104,7 @@ public class BankCounterManager implements Runnable {
 					serveTime = serveTime / Integer.parseInt(priorityFactor.split(":")[1]);
 				}
 				token.setServeTime(new Date(DateTime.now().plus(serveTime).getMillis()));
+				bankCounterRepository.updateToken(token.clone());
 				q.add(token);
 				counter.setTokenQue(q);
 				break;

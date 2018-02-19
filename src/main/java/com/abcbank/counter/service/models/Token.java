@@ -174,6 +174,7 @@ public class Token implements Comparable<Token>, Cloneable {
 		token.setCreatedTime(this.createdTime);
 		token.setId(this.getId());
 		token.setCustomerId(this.getCustomerId());
+		token.setTokenId(getTokenId());
 		return token;
 	}
 }
