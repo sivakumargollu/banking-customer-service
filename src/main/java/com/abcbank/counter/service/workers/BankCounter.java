@@ -24,6 +24,7 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 	CounterStatus   status;
 	OperatorDetails operatorDetails;
 	String          counterId;
+	Long refreshIntraval;
 
 	@Autowired
 	BankCounterManager bankCounterManager;
@@ -53,6 +54,14 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 
 	public void setCounterId(String counterId) {
 		this.counterId = counterId;
+	}
+
+	public Long getRefreshIntraval() {
+		return refreshIntraval;
+	}
+
+	public void setRefreshIntraval(Long refreshIntraval) {
+		this.refreshIntraval = refreshIntraval;
 	}
 
 	@JsonIgnore
@@ -138,7 +147,7 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 		try {
 			while (true) {
 				if (tokenQue.isEmpty()) {
-					Thread.sleep(5000);
+					Thread.sleep(refreshIntraval);
 				} else {
 					while (!tokenQue.isEmpty()){
 						Token token = serve(tokenQue.poll());

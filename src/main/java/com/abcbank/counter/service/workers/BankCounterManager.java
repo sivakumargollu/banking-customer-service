@@ -39,6 +39,14 @@ public class BankCounterManager implements Runnable {
 	@Value("${priority-factor}")
 	String priorityFactor;
 
+	@Value("${bankcounter.manager.refresh-intraval}")
+	Long refreshIntraval;
+
+	@Value("${bankcounter.refresh-intraval}")
+	Long counterRefreshIntraval;
+
+
+
 	@Autowired
 	BankCounterRepository bankCounterRepository;
 
@@ -86,8 +94,9 @@ public class BankCounterManager implements Runnable {
 		LinkedList<BankService> itemList  = new LinkedList<BankService>(token.getActionItems());
 		BankService reqService = itemList.pollFirst();
 		//Looping through all counters to find the one which can serve the current token
+		boolean isAssigned = false;
 		for (BankCounter counter : bankCounters) {
-			if(Arrays.asList(counter.getAvailableServices()).contains(reqService)){
+			if(Arrays.asList(counter.getAvailableServices()).contains(reqService) && !isAssigned){
 				//Got a counter
 				PriorityQueue<Token> q = counter.getTokenQue();
 				token.setReqService(reqService);
@@ -98,6 +107,7 @@ public class BankCounterManager implements Runnable {
 				token.setServeTime(new Date(DateTime.now().plus(serveTime).getMillis()));
 				q.add(token);
 				counter.setTokenQue(q);
+				isAssigned = true;
 			}
 		}
 		token.setActionItems(itemList);
@@ -118,6 +128,7 @@ public class BankCounterManager implements Runnable {
 		//setting empty que
 		for (BankCounter bankCounter : bankCounters) {
 			bankCounter.setTokenQue(new PriorityQueue<Token>());
+			bankCounter.setRefreshIntraval(counterRefreshIntraval);
 		}
 		startCounters();
 
@@ -140,7 +151,7 @@ public class BankCounterManager implements Runnable {
 		while (true) {
 			if (waitingTokens.isEmpty()) {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(refreshIntraval);
 					refresh();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
