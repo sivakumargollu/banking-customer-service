@@ -4,22 +4,21 @@ import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.MultiCounterServices;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "TOKEN")
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Token implements Comparable<Token>, Cloneable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	Long Id;
 
 	String tokenId;
@@ -52,6 +51,18 @@ public class Token implements Comparable<Token>, Cloneable {
 	@ElementCollection
 	List<BankService> actionItems;
 
+	@Column
+	@ElementCollection
+	Map<BankService, String> comments;
+
+	public void setComments(Map<BankService, String> comments) {
+		this.comments = comments;
+	}
+
+	public Map<BankService, String> getComments() {
+		return comments;
+	}
+
 	public TokenStatus getStatus() {
 		return status;
 	}
@@ -77,6 +88,7 @@ public class Token implements Comparable<Token>, Cloneable {
 		this.priority = priority;
 		this.reqService = reqService;
 		this.status = TokenStatus.NEW;
+		this.comments = new HashMap<>();
 		initActionItems();
 	}
 
@@ -84,8 +96,9 @@ public class Token implements Comparable<Token>, Cloneable {
 		this.customerId = customerId;
 		this.priority = priority;
 		this.status = TokenStatus.NEW;
+		this.comments = new HashMap<>();
 		initActionItems(reqServices);
-		this.reqService = ((LinkedList<BankService>) getActionItems()).pollFirst();
+		this.reqService = ((LinkedList<BankService>) actionItems).peek();
 	}
 
 	private LinkedList<BankService> initActionItems() {
@@ -203,6 +216,7 @@ public class Token implements Comparable<Token>, Cloneable {
 		token.setId(this.getId());
 		token.setCustomerId(this.getCustomerId());
 		token.setTokenId(getTokenId());
+		token.setComments(new HashMap<>(getComments()));
 		return token;
 	}
 }

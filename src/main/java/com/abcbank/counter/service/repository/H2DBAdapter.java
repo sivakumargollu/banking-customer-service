@@ -91,9 +91,11 @@ public class H2DBAdapter implements DBAdapter<Session> {
 		String hql = "FROM Token ";
 		Query query = session.createQuery(hql);
 		List<Token> retTokens = new ArrayList<>();
-		for (Token token : (List<Token>) query.list()) {
-			if(token != null && token.getStatus().equals(status)){
-				retTokens.add(token);
+		if(status != null) {
+			for (Token token : (List<Token>) query.list()) {
+				if (token != null && token.getStatus().equals(status)) {
+					retTokens.add(token);
+				}
 			}
 		}
 		return retTokens;
