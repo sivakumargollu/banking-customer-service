@@ -1,6 +1,10 @@
 package com.abcbank.counter.service.services;
 
-import com.abcbank.counter.service.enums.CounterStatus;
+import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.Priority;
+import com.abcbank.counter.service.enums.TokenStatus;
+import com.abcbank.counter.service.exceptions.DataNotFoundException;
+import com.abcbank.counter.service.exceptions.ServiceException;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
@@ -31,6 +35,18 @@ public class BankCounterService {
 			bankCounterRepository.saveCustomerDetails(customerDetails);
 		}
 		return bankCounterRepository.createToken(customerDetails);
+	}
+
+	@RequestMapping(value = "/token/update", method = RequestMethod.POST)
+	@ResponseBody
+	public Token updateToken(@RequestParam Long tokenId, @RequestParam(required = false) TokenStatus tokenStatus,
+			@RequestParam(required = false) BankService service, @RequestParam(required = false) String comments,
+			@RequestParam(required = false) Priority priority) throws ServiceException {
+		try {
+			return bankCounterRepository.updateToken(tokenId, tokenStatus, service, comments, priority);
+		} catch (DataNotFoundException e){
+			throw new ServiceException("Failed to serve request due to " + e.getMessage());
+		}
 	}
 
 	@RequestMapping(value = "/counter/status", method = RequestMethod.GET)

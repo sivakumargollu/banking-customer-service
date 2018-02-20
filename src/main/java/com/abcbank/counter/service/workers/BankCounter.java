@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.PriorityQueue;
 
 @Component
-public class BankCounter implements Comparable<BankCounter>, Runnable {
+public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable{
 
 	BankService[]   availableServices;
 	CounterStatus   status;
@@ -121,8 +121,10 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 			this.status = CounterStatus.AVAILABLE;
 			if (token.getActionItems().size() > 0) {
 				token.setStatus(TokenStatus.FORWARDED);
+				token.getComments().put(service, "Requested service " + service.name() + " done at " + counterId + "marking it as " + TokenStatus.FORWARDED.name());
 			} else {
 				token.setStatus(TokenStatus.COMPLETED);
+				token.getComments().put(service, "Requested service " + service.name() + " done at " + counterId + "marking it as " + TokenStatus.COMPLETED.name());
 			}
 		} catch (InterruptedException ie) {
 			logger.error(ie.getStackTrace().toString());

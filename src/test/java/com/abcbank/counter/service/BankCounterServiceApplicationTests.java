@@ -221,6 +221,21 @@ public class BankCounterServiceApplicationTests {
 		return bankServices;
 	}
 
+	@Test
+	public void testInitLoadCounters() {
+		PriorityQueue<BankCounter> bankCounters = new PriorityQueue<>();
+		ClassLoader classLoader = getClass().getClassLoader();
+		ObjectMapper objectMapper = new ObjectMapper();
+		final TypeReference<PriorityQueue<BankCounter>> type = new TypeReference<PriorityQueue<BankCounter>>() {};
+		try {
+			bankCounters = objectMapper.readValue(classLoader.getResourceAsStream("counters.json"), type);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        Assert.assertTrue(bankCounters != null);
+		Assert.assertEquals(bankCounters.size(), 4);
+	}
+
 	public BankCounter getTestBankCounter() {
 		PriorityQueue<BankCounter> bankCounters = new PriorityQueue<>();
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -231,6 +246,6 @@ public class BankCounterServiceApplicationTests {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        return bankCounters.peek();
+		return bankCounters.peek();
 	}
 }
