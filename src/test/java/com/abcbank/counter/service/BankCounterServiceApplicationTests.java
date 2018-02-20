@@ -187,6 +187,30 @@ public class BankCounterServiceApplicationTests {
 		Assert.assertEquals(bankCounter.getStatus(), CounterStatus.CLOSED);
 	}
 
+	@Test
+	public void customMultiCounterServiceTest() {
+
+		Customer customer = new Customer();
+		customer.setCustomerId(1234l);
+		customer.setPhNo("9999999");
+		customer.setName("SivaKumar");
+
+		Address address = new Address();
+		address.setZipCode("1234567");
+		address.setCity("KAIKALUR");
+
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setCustomer(customer);
+		customerDetails.setAddress(address);
+		customerDetails.setPriority(Priority.REGULAR);
+		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.WITHDRAW, BankService.ACC_OPEN}));
+		customerDetails.setNewCustomer(true);
+
+		Token token = bankCounterService.createToken(customerDetails);
+		Assert.assertTrue(token != null);
+		Assert.assertTrue(token.getId() > 0)	;
+	}
+
 	public LinkedList<BankService> getBankServiceList(BankService[] services) {
 		LinkedList<BankService> bankServices = new LinkedList<>();
 		for (BankService service : services) {
