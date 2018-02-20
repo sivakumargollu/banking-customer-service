@@ -1,13 +1,12 @@
 package com.abcbank.counter.service;
 
-import com.abcbank.counter.service.enums.BankService;
-import com.abcbank.counter.service.enums.CounterStatus;
-import com.abcbank.counter.service.enums.Priority;
-import com.abcbank.counter.service.enums.TokenStatus;
+import com.abcbank.counter.service.enums.*;
 import com.abcbank.counter.service.models.*;
 import com.abcbank.counter.service.repository.DBAdapter;
 import com.abcbank.counter.service.services.BankCounterService;
 import com.abcbank.counter.service.workers.BankCounter;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -183,8 +182,11 @@ public class BankCounterServiceApplicationTests {
 
 	@Test
 	public void shouldUpdateCounterStatus() throws Exception {
-		BankCounter bankCounter = bankCounterService.update("ABCBANK-B1-C4", CounterStatus.CLOSED);
-		Assert.assertEquals(bankCounter.getStatus(), CounterStatus.CLOSED);
+		BankCounter counter =  getTestBankCounter();
+		counter.setStatus(CounterStatus.CLOSED);
+		bankCounterService.update(counter);
+		BankCounter counter1 = bankCounterService.counterStatus(counter.getCounterId()).get(0);
+		Assert.assertEquals(counter1.getStatus(), CounterStatus.CLOSED);
 	}
 
 	@Test
@@ -217,5 +219,18 @@ public class BankCounterServiceApplicationTests {
 			bankServices.add(service);
 		}
 		return bankServices;
+	}
+
+	public BankCounter getTestBankCounter() {
+		PriorityQueue<BankCounter> bankCounters = new PriorityQueue<>();
+		ClassLoader classLoader = getClass().getClassLoader();
+		ObjectMapper objectMapper = new ObjectMapper();
+		final TypeReference<PriorityQueue<BankCounter>> type = new TypeReference<PriorityQueue<BankCounter>>() {};
+		try {
+			bankCounters = objectMapper.readValue(classLoader.getResourceAsStream("counters.json"), type);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        return bankCounters.peek();
 	}
 }

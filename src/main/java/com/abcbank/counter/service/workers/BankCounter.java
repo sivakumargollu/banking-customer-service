@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.PriorityQueue;
 
 @Component
-public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable {
+public class BankCounter implements Comparable<BankCounter>, Runnable {
 
 	BankService[]   availableServices;
 	CounterStatus   status;

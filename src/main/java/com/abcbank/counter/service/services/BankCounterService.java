@@ -51,7 +51,7 @@ public class BankCounterService {
 	}
 
 	@RequestMapping(value = "/counter/update", method = RequestMethod.POST)
-	public BankCounter update(@RequestParam(required = true) String counterId, @RequestParam(required = true) CounterStatus status) throws Exception {
-		return bankCounterManager.updateCounterStatus(counterId, status);
+	public BankCounter update(@RequestBody  BankCounter counter) throws Exception {
+		return bankCounterManager.updateCounterStatus(counter);
 	}
 }

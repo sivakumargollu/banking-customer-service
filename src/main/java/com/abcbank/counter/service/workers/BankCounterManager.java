@@ -188,11 +188,13 @@ public class BankCounterManager implements Runnable {
 	}
 
 	//updates counter status
-	public BankCounter updateCounterStatus(String counterId, CounterStatus counterStatus) throws Exception {
-		 List<BankCounter> bankCounters = getBankCounters().stream().filter(bankCounter -> bankCounter.getCounterId().equals(counterId)).collect(Collectors.toList());
+	public BankCounter updateCounterStatus(BankCounter inputBankCounter) throws Exception {
+		 List<BankCounter> bankCounters = getBankCounters().stream().filter(bankCounter -> bankCounter.getCounterId().equals(inputBankCounter.getCounterId())).collect(Collectors.toList());
 		 if(bankCounters.size() > 0){
 		 	BankCounter counter = bankCounters.get(0);
-		 	counter.setStatus(counterStatus);
+		 	counter.setStatus(inputBankCounter.getStatus());
+		 	counter.setAvailableServices(inputBankCounter.getAvailableServices());
+		 	counter.setOperatorDetails(inputBankCounter.getOperatorDetails());
 		 	return counter;
 		 } else {
 		 	throw new Exception("No counter available with given counterId");
