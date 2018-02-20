@@ -1,6 +1,7 @@
 package com.abcbank.counter.service.workers;
 
 import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.Token;
@@ -23,6 +24,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
@@ -183,5 +185,17 @@ public class BankCounterManager implements Runnable {
 	public void refresh() {
 		List<Token> tokenList = bankCounterRepository.readTokens(TokenStatus.NEW);
 		waitingTokens.addAll(tokenList);
+	}
+
+	//updates counter status
+	public BankCounter updateCounterStatus(String counterId, CounterStatus counterStatus) throws Exception {
+		 List<BankCounter> bankCounters = getBankCounters().stream().filter(bankCounter -> bankCounter.getCounterId().equals(counterId)).collect(Collectors.toList());
+		 if(bankCounters.size() > 0){
+		 	BankCounter counter = bankCounters.get(0);
+		 	counter.setStatus(counterStatus);
+		 	return counter;
+		 } else {
+		 	throw new Exception("No counter available with given counterId");
+		 }
 	}
 }

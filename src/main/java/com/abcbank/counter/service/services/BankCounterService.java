@@ -1,5 +1,6 @@
 package com.abcbank.counter.service.services;
 
+import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
@@ -47,5 +48,10 @@ public class BankCounterService {
 			throw new Exception("Not a Valid token");
 		}
 		return bankCounterRepository.getTokenStatus(tokenId);
+	}
+
+	@RequestMapping(value = "/counter/update", method = RequestMethod.GET)
+	public BankCounter update(@RequestParam(required = true) String counterId, @RequestParam(required = true) CounterStatus status) throws Exception {
+		return bankCounterManager.updateCounterStatus(counterId, status);
 	}
 }

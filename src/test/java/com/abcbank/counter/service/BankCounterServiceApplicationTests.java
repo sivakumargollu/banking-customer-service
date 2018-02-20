@@ -1,6 +1,7 @@
 package com.abcbank.counter.service;
 
 import com.abcbank.counter.service.enums.BankService;
+import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.*;
@@ -178,7 +179,11 @@ public class BankCounterServiceApplicationTests {
 			}
 		}
 		Assert.assertTrue(counterAssigned);
+	}
 
-
+	@Test
+	public void shouldUpdateCounterStatus() throws Exception {
+		BankCounter bankCounter = bankCounterService.update("ABCBANK-B1-C4", CounterStatus.CLOSED);
+		Assert.assertEquals(bankCounter.getStatus(), CounterStatus.CLOSED);
 	}
 }
