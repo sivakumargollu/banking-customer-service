@@ -50,7 +50,7 @@ public class BankCounterService {
 		return bankCounterRepository.getTokenStatus(tokenId);
 	}
 
-	@RequestMapping(value = "/counter/update", method = RequestMethod.GET)
+	@RequestMapping(value = "/counter/update", method = RequestMethod.POST)
 	public BankCounter update(@RequestParam(required = true) String counterId, @RequestParam(required = true) CounterStatus status) throws Exception {
 		return bankCounterManager.updateCounterStatus(counterId, status);
 	}

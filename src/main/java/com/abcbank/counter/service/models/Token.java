@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "TOKEN")
@@ -79,6 +80,14 @@ public class Token implements Comparable<Token>, Cloneable {
 		initActionItems();
 	}
 
+	public 	Token(Long customerId, Priority priority, LinkedList<BankService> reqServices) {
+		this.customerId = customerId;
+		this.priority = priority;
+		this.status = TokenStatus.NEW;
+		initActionItems(reqServices);
+		this.reqService = ((LinkedList<BankService>) getActionItems()).pollFirst();
+	}
+
 	private LinkedList<BankService> initActionItems() {
 		actionItems = new LinkedList<BankService>();
 		if (reqService != null) {
@@ -93,9 +102,28 @@ public class Token implements Comparable<Token>, Cloneable {
 				actionItems.add(reqService);
 			}
 		}
-
 		return (LinkedList<BankService>) actionItems;
 	}
+
+	private LinkedList<BankService> initActionItems(LinkedList<BankService> reqServices) {
+		actionItems = new LinkedList<BankService>();
+		for (BankService reqService : reqServices) {
+			if (reqService != null) {
+				if (reqService.isMultiCounter()) {
+					BankService[] services = MultiCounterServices.getActionItemsByService(reqService);
+					if (services != null) {
+						for (BankService service : services) {
+							actionItems.add(service);
+						}
+					}
+				} else {
+					actionItems.add(reqService);
+				}
+			}
+		}
+		return (LinkedList<BankService>) actionItems;
+	}
+
 
 	public Long getId() {
 		return Id;

@@ -3,14 +3,16 @@ package com.abcbank.counter.service.models;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
 
+import java.util.LinkedList;
+
 public class CustomerDetails {
 
-	Customer    customer;
-	Address     address;
-	Priority    priority;
-	BankService bankService;
-	boolean     isNewCustomer;
-	int         customerId;
+	Customer   customer;
+	Address    address;
+	Priority   priority;
+	LinkedList<BankService> bankServices;
+	boolean    isNewCustomer;
+	int        customerId;
 
 	public Customer getCustomer() {
 		return customer;
@@ -28,12 +30,12 @@ public class CustomerDetails {
 		this.priority = priority;
 	}
 
-	public BankService getBankService() {
-		return bankService;
+	public LinkedList<BankService> getBankServices() {
+		return bankServices;
 	}
 
-	public void setBankService(BankService bankService) {
-		this.bankService = bankService;
+	public void setBankServices(LinkedList<BankService> bankServices) {
+		this.bankServices = bankServices;
 	}
 
 	public boolean isNewCustomer() {

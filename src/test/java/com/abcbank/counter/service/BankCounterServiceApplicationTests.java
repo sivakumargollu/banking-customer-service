@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.Table;
+import java.util.LinkedList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -66,7 +66,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setCustomer(customer);
 		customerDetails.setAddress(address);
 		customerDetails.setPriority(Priority.PREMIUM);
-		customerDetails.setBankService(BankService.ACC_OPEN);
+		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
 		CustomerDetails details = dbAdapter.saveCustomer(customerDetails);
@@ -89,7 +89,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setCustomer(customer);
 		customerDetails.setAddress(address);
 		customerDetails.setPriority(Priority.PREMIUM);
-		customerDetails.setBankService(BankService.ACC_OPEN);
+		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
 		Token token = bankCounterService.createToken(customerDetails);
@@ -132,7 +132,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setCustomer(customer);
 		customerDetails.setAddress(address);
 		customerDetails.setPriority(Priority.REGULAR);
-		customerDetails.setBankService(BankService.ACC_OPEN);
+		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
 		Token token = bankCounterService.createToken(customerDetails);
@@ -159,7 +159,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setCustomer(customer);
 		customerDetails.setAddress(address);
 		customerDetails.setPriority(Priority.REGULAR);
-		customerDetails.setBankService(BankService.REGISTRATION);
+		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
 		Token token = bankCounterService.createToken(customerDetails);
@@ -185,5 +185,13 @@ public class BankCounterServiceApplicationTests {
 	public void shouldUpdateCounterStatus() throws Exception {
 		BankCounter bankCounter = bankCounterService.update("ABCBANK-B1-C4", CounterStatus.CLOSED);
 		Assert.assertEquals(bankCounter.getStatus(), CounterStatus.CLOSED);
+	}
+
+	public LinkedList<BankService> getBankServiceList(BankService[] services) {
+		LinkedList<BankService> bankServices = new LinkedList<>();
+		for (BankService service : services) {
+			bankServices.add(service);
+		}
+		return bankServices;
 	}
 }

@@ -6,12 +6,11 @@ import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
-import com.abcbank.counter.service.workers.BankCounter;
-import com.abcbank.counter.service.workers.BankCounterManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @Component
@@ -32,8 +31,8 @@ public class BankCounterRepository {
 	public Token createToken(CustomerDetails customerDetails) {
 		Long customerId = customerDetails.getCustomer().getCustomerId();
 		Priority priority = customerDetails.getPriority();
-		BankService requestedService = customerDetails.getBankService();
-		Token token = new Token(customerId, priority, requestedService);
+		LinkedList<BankService> requestedServices = customerDetails.getBankServices();
+		Token token = new Token(customerId, priority, requestedServices);
 		bankCounterDAO.saveToken(token);
 		token.setTokenId(token.getPriority().name() + "-" + token.getId());
 		bankCounterDAO.updateToken(token);

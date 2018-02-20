@@ -1,7 +1,9 @@
 package com.abcbank.counter.service.enums;
 
 public enum MultiCounterServices {
-	ACC_OPEN(BankService.ACC_OPEN, new BankService[] { BankService.get(BankService.REGISTRATION.name()), BankService.get(BankService.DEPOSIT.name()),
+	ACC_OPEN(BankService.ACC_OPEN, new BankService[] {
+			BankService.get(BankService.REGISTRATION.name()),
+			BankService.get(BankService.DEPOSIT.name()),
 			BankService.get(BankService.PASSBOOK.name()) });
 
 	BankService   service;
