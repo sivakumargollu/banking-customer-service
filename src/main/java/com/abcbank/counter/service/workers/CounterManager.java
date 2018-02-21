@@ -103,7 +103,7 @@ public class CounterManager implements Runnable {
 			counterRepository.updateToken(token.clone());
 			return;
 		}
-		PriorityQueue<Token> tokenQue = counter.getTokenQue();
+		PriorityQueue<Token> tokenQue = (PriorityQueue<Token>)counter.getTokenQue();
 		token.setReqService(reqService);
 		long serveTime = tokenQue.size() * reqService.getAvgTimeRequiredInMin() * 60000; //into milli seconds
 		if (token.getPriority().equals(Priority.PREMIUM)) {
