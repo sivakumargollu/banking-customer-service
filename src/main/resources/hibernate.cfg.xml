@@ -31,10 +31,10 @@
         <property name="hbm2ddl.auto">create</property>
 
 
-        <mapping class="com.abcbank.counter.service.entities.Customer" file="customer.hbml.xml"/>
-        <mapping class="com.abcbank.counter.service.entities.Address" file="address.hbml.xml"/>
+        <mapping class="com.abcbank.counter.service.entities.Customer"/>
+        <mapping class="com.abcbank.counter.service.entities.Address" />
         <mapping class="com.abcbank.counter.service.entities.Token"/>
-        <mapping class="com.abcbank.counter.service.entities.TokenXCounter" file="token_x_counter.hbml.xml"/>
+        <mapping class="com.abcbank.counter.service.entities.TokenXCounter"/>
         <mapping class="com.abcbank.counter.service.workers.BankCounter"/>
 
 
