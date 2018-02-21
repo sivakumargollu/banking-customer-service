@@ -190,6 +190,17 @@ public class BankCounterServiceApplicationTests {
 	}
 
 	@Test
+	public void shouldUpdateCounterServiceStatus() throws Exception {
+		BankCounter counter =  getTestBankCounter();
+		HashMap<BankService, Boolean> serviceStatusMap = new HashMap<>();
+		serviceStatusMap.put(BankService.ACC_STMT, false);
+		counter.setServices(serviceStatusMap);
+		bankCounterService.update(counter);
+		BankCounter counter1 = bankCounterService.counterStatus(counter.getCounterId()).get(0);
+		Assert.assertEquals(counter1.getServices().get(BankService.ACC_STMT), false);
+	}
+
+	@Test
 	public void customMultiCounterServiceTest() {
 
 		Customer customer = new Customer();

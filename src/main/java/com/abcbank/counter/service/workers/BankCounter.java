@@ -13,17 +13,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
 @Component
 public class BankCounter implements Comparable<BankCounter>, Runnable {
 
-	HashSet<BankService> services;
-	CounterStatus        status;
-	OperatorDetails      operatorDetails;
-	String               counterId;
-	Long                 refreshIntraval;
+	HashMap<BankService, Boolean> services;
+	CounterStatus                 status;
+	OperatorDetails               operatorDetails;
+	String                        counterId;
+	Long                          refreshIntraval;
 
 	@JsonIgnore
 	@Autowired
@@ -79,7 +80,7 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 	}
 
 	public BankCounter(String counterId,
-			HashSet<BankService> services,
+			HashMap<BankService, Boolean> services,
 			CounterStatus status, OperatorDetails operatorDetails) {
 		this.services = services;
 		this.status = status;
@@ -95,11 +96,11 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 		this.operatorDetails = operatorDetails;
 	}
 
-	public HashSet<BankService> getServices() {
+	public HashMap<BankService, Boolean> getServices() {
 		return services;
 	}
 
-	public void setServices(HashSet<BankService> services) {
+	public void setServices(HashMap<BankService, Boolean> services) {
 		this.services = services;
 	}
 
@@ -118,7 +119,6 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 			BankService service = token.getReqService();
 			logger.info("Serving token "+ token.getId() +" at " + counterId + ", Service type " + token.getReqService().name());
 			Thread.sleep(service.getAvgTimeRequiredInMin() * 60000); //serving token
-			this.status = CounterStatus.AVAILABLE;
 			if (token.getActionItems().size() > 0) {
 				token.setStatus(TokenStatus.FORWARDED);
 				token.getComments().put(service, "Requested service " + service.name() + " done at " + counterId + "marking it as " + TokenStatus.FORWARDED.name());
