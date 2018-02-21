@@ -1,35 +1,34 @@
 package com.abcbank.counter.service.services;
 
-import com.abcbank.counter.service.repository.BankCounterRepository;
+import com.abcbank.counter.service.repository.CounterRepository;
 import com.abcbank.counter.service.workers.BankCounter;
-import com.abcbank.counter.service.workers.BankCounterManager;
+import com.abcbank.counter.service.workers.CounterManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.PriorityQueue;
+import java.util.ArrayList;
 
 @Component
 public class ApplicationBootStrapService implements ApplicationListener<ContextRefreshedEvent> {
 
 	@Autowired
-	BankCounterManager bankCounterManager;
+	CounterManager counterManager;
 
 	@Autowired
-	BankCounterRepository bankCounterRepository;
+	CounterRepository counterRepository;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-		bankCounterManager.intializeCounters();
-		PriorityQueue<BankCounter> counters = bankCounterManager.getBankCounters();
+		counterManager.intializeCounters();
+		ArrayList<BankCounter> counters = counterManager.getBankCounters();
 		//Since BankCounter intialization not done by spring container, setting values to component.
 		for (BankCounter counter : counters) {
-			counter.setBankCounterManager(bankCounterManager);
-			counter.setBankCounterRepository(bankCounterRepository);
+			counter.setCounterManager(counterManager);
+			counter.setCounterRepository(counterRepository);
 		}
-		new Thread(bankCounterManager).start();
-		bankCounterManager.startCounters();
+		new Thread(counterManager).start();
+		counterManager.startCounters();
 	}
 }

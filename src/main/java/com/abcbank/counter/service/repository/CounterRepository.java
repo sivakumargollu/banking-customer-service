@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class BankCounterRepository {
+public class CounterRepository {
 
 	@Autowired
 	BankCounterDAO bankCounterDAO;
 
-	public BankCounterRepository() {
+	public CounterRepository() {
 
 	}
 

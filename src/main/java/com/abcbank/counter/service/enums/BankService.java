@@ -5,13 +5,13 @@ import static java.lang.Boolean.TRUE;
 
 public enum BankService {
 
-	WITHDRAW(5, FALSE),
-	DEPOSIT(5, FALSE),
-	ACC_OPEN(10, TRUE),
+	WITHDRAW(1, FALSE),
+	DEPOSIT(1, FALSE),
+	ACC_OPEN(0, TRUE), //Multicounter service, '0' refers  accumulated time of all counters
 	ACC_STMT(3, FALSE),
-	ATM_SERVICES(5, FALSE),
-	REGISTRATION(2, FALSE),
-	PASSBOOK(2, FALSE);
+	ATM_SERVICES(1, FALSE),
+	REGISTRATION(1, FALSE),
+	PASSBOOK(1, FALSE);
 
 	int     avgTimeRequiredInMin;
 	boolean isMultiCounter;

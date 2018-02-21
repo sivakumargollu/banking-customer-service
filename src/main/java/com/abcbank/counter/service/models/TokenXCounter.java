@@ -1,5 +1,6 @@
 package com.abcbank.counter.service.models;
 
+import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.TokenStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,10 +12,11 @@ import java.util.Date;
 @Table(name = "TokenXCounter")
 public class TokenXCounter {
 
-	public TokenXCounter(Long tokenId, String counterId, TokenStatus tokenStatus) {
+	public TokenXCounter(Long tokenId, String counterId, TokenStatus tokenStatus, BankService service) {
 		this.tokenId = tokenId;
 		this.counterId = counterId;
 		this.tokenStatus = tokenStatus;
+		this.service = service;
 	}
 
 	public TokenXCounter(){
@@ -34,6 +36,10 @@ public class TokenXCounter {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "TokenStatus")
 	TokenStatus tokenStatus;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "service")
+	BankService service;
 
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
@@ -78,5 +84,13 @@ public class TokenXCounter {
 
 	public void setUpdatedTime(Date updatedTime) {
 		this.updatedTime = updatedTime;
+	}
+
+	public BankService getService() {
+		return service;
+	}
+
+	public void setService(BankService service) {
+		this.service = service;
 	}
 }

@@ -6,48 +6,47 @@ import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.OperatorDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
-import com.abcbank.counter.service.repository.BankCounterDAO;
-import com.abcbank.counter.service.repository.BankCounterRepository;
+import com.abcbank.counter.service.repository.CounterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.PriorityQueue;
 
 @Component
-public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable{
+public class BankCounter implements Comparable<BankCounter>, Runnable {
 
-	BankService[]   availableServices;
-	CounterStatus   status;
-	OperatorDetails operatorDetails;
-	String          counterId;
-	Long refreshIntraval;
-
-	@JsonIgnore
-	@Autowired
-	BankCounterManager bankCounterManager;
+	HashSet<BankService> services;
+	CounterStatus        status;
+	OperatorDetails      operatorDetails;
+	String               counterId;
+	Long                 refreshIntraval;
 
 	@JsonIgnore
 	@Autowired
-	BankCounterRepository bankCounterRepository;
+	CounterManager counterManager;
 
-	public BankCounterManager getBankCounterManager() {
-		return bankCounterManager;
+	@JsonIgnore
+	@Autowired
+	CounterRepository counterRepository;
+
+	public CounterManager getCounterManager() {
+		return counterManager;
 	}
 
-	public void setBankCounterManager(BankCounterManager bankCounterManager) {
-		this.bankCounterManager = bankCounterManager;
+	public void setCounterManager(CounterManager counterManager) {
+		this.counterManager = counterManager;
 	}
 
-	public BankCounterRepository getBankCounterRepository() {
-		return bankCounterRepository;
+	public CounterRepository getCounterRepository() {
+		return counterRepository;
 	}
 
-	public void setBankCounterRepository(BankCounterRepository bankCounterRepository) {
-		this.bankCounterRepository = bankCounterRepository;
+	public void setCounterRepository(CounterRepository counterRepository) {
+		this.counterRepository = counterRepository;
 	}
 
 	public String getCounterId() {
@@ -66,7 +65,6 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 		this.refreshIntraval = refreshIntraval;
 	}
 
-	@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 	PriorityQueue<Token> tokenQue;
 
 	public PriorityQueue<Token> getTokenQue() {
@@ -80,8 +78,10 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 	public BankCounter() {
 	}
 
-	public BankCounter(String counterId, BankService[] availableServices, CounterStatus status, OperatorDetails operatorDetails) {
-		this.availableServices = availableServices;
+	public BankCounter(String counterId,
+			HashSet<BankService> services,
+			CounterStatus status, OperatorDetails operatorDetails) {
+		this.services = services;
 		this.status = status;
 		this.operatorDetails = operatorDetails;
 		this.counterId = counterId;
@@ -95,12 +95,12 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 		this.operatorDetails = operatorDetails;
 	}
 
-	public BankService[] getAvailableServices() {
-		return availableServices;
+	public HashSet<BankService> getServices() {
+		return services;
 	}
 
-	public void setAvailableServices(BankService[] availableServices) {
-		this.availableServices = availableServices;
+	public void setServices(HashSet<BankService> services) {
+		this.services = services;
 	}
 
 	Logger logger = LoggerFactory.getLogger(BankCounter.class);
@@ -116,8 +116,8 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 	public Token serve(Token token) {
 		try {
 			BankService service = token.getReqService();
-			logger.info("Serving token at " + operatorDetails.toString() + ", Service type " + token.getReqService().name());
-			Thread.sleep(service.getAvgTimeRequiredInMin()); //serving token
+			logger.info("Serving token "+ token.getId() +" at " + counterId + ", Service type " + token.getReqService().name());
+			Thread.sleep(service.getAvgTimeRequiredInMin() * 60000); //serving token
 			this.status = CounterStatus.AVAILABLE;
 			if (token.getActionItems().size() > 0) {
 				token.setStatus(TokenStatus.FORWARDED);
@@ -135,7 +135,6 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 	@Override
 	public int compareTo(BankCounter o) {
 		if (o != null && o.tokenQue != null && this.tokenQue != null) {
-
 			if (o.tokenQue.size() > this.tokenQue.size()) {
 				return -1;
 			} else if (o.tokenQue.size() < this.tokenQue.size()) {
@@ -154,11 +153,11 @@ public class BankCounter implements Comparable<BankCounter>, Runnable, Cloneable
 				} else {
 					while (!tokenQue.isEmpty()){
 						Token token = serve(tokenQue.poll());
-						TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, token.getStatus());
-						bankCounterRepository.updateTokenCounterStatus(tokenXCounter);
-						bankCounterRepository.updateToken(token.clone());
+						TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, token.getStatus(), token.getReqService());
+						counterRepository.updateTokenCounterStatus(tokenXCounter);
+						counterRepository.updateToken(token.clone());
 						if(token.getStatus().equals(TokenStatus.FORWARDED)){
-							bankCounterManager.addWaitingToken(token);
+							counterManager.addWaitingToken(token);
 						}
 					}
 

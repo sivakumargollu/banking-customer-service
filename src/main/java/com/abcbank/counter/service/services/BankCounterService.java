@@ -8,9 +8,9 @@ import com.abcbank.counter.service.exceptions.ServiceException;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.models.Token;
 import com.abcbank.counter.service.models.TokenXCounter;
-import com.abcbank.counter.service.repository.BankCounterRepository;
+import com.abcbank.counter.service.repository.CounterRepository;
 import com.abcbank.counter.service.workers.BankCounter;
-import com.abcbank.counter.service.workers.BankCounterManager;
+import com.abcbank.counter.service.workers.CounterManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,18 +23,18 @@ import java.util.List;
 public class BankCounterService {
 
 	@Autowired
-	BankCounterRepository bankCounterRepository;
+	CounterRepository counterRepository;
 
 	@Autowired
-	BankCounterManager bankCounterManager;
+	CounterManager counterManager;
 
 	@RequestMapping(value = "/token/new", method = RequestMethod.POST)
 	@ResponseBody
 	public Token createToken(@RequestBody CustomerDetails customerDetails) {
 		if (customerDetails.isNewCustomer()) {
-			bankCounterRepository.saveCustomerDetails(customerDetails);
+			counterRepository.saveCustomerDetails(customerDetails);
 		}
-		return bankCounterRepository.createToken(customerDetails);
+		return counterRepository.createToken(customerDetails);
 	}
 
 	@RequestMapping(value = "/token/update", method = RequestMethod.POST)
@@ -43,7 +43,7 @@ public class BankCounterService {
 			@RequestParam(required = false) BankService service, @RequestParam(required = false) String comments,
 			@RequestParam(required = false) Priority priority) throws ServiceException {
 		try {
-			return bankCounterRepository.updateToken(tokenId, tokenStatus, service, comments, priority);
+			return counterRepository.updateToken(tokenId, tokenStatus, service, comments, priority);
 		} catch (DataNotFoundException e){
 			throw new ServiceException("Failed to serve request due to " + e.getMessage());
 		}
@@ -52,9 +52,9 @@ public class BankCounterService {
 	@RequestMapping(value = "/counter/status", method = RequestMethod.GET)
 	public List<BankCounter> counterStatus(@RequestParam(required = false) String counterId) {
 		if(counterId != null && counterId.trim().length() > 0){
-			return bankCounterManager.getCounterStatus(counterId);
+			return counterManager.getCounterStatus(counterId);
 		} else  {
-			return bankCounterManager.getCounterStatus();
+			return counterManager.getCounterStatus();
 		}
 	}
 
@@ -63,11 +63,11 @@ public class BankCounterService {
 		if(tokenId == null){
 			throw new Exception("Not a Valid token");
 		}
-		return bankCounterRepository.getTokenStatus(tokenId);
+		return counterRepository.getTokenStatus(tokenId);
 	}
 
 	@RequestMapping(value = "/counter/update", method = RequestMethod.POST)
 	public BankCounter update(@RequestBody  BankCounter counter) throws Exception {
-		return bankCounterManager.updateCounterStatus(counter);
+		return counterManager.updateCounterStatus(counter);
 	}
 }
