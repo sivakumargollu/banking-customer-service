@@ -28,6 +28,10 @@ public class ApplicationBootStrapService implements ApplicationListener<ContextR
 			counter.setCounterManager(counterManager);
 			counter.setCounterRepository(counterRepository);
 		}
+
+		for (BankCounter counter : counters) {
+			counterRepository.saveBankCounter(counter, false);
+		}
 		new Thread(counterManager).start();
 		counterManager.startCounters();
 	}

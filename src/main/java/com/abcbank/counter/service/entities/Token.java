@@ -48,11 +48,11 @@ public class Token implements Comparable<Token>, Cloneable {
 	TokenStatus status;
 
 	@Column
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	List<BankService> actionItems;
 
 	@Column
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	Map<BankService, String> comments;
 
 	public void setComments(Map<BankService, String> comments) {

@@ -7,6 +7,7 @@ import com.abcbank.counter.service.exceptions.DataNotFoundException;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.entities.Token;
 import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -81,5 +82,9 @@ public class CounterRepository {
 
 	public List<Token> readTokens(TokenStatus tokenStatus) {
 		return bankCounterDAO.readTokens(tokenStatus);
+	}
+
+	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate){
+		return bankCounterDAO.saveBankCounter(counter, isUpdate);
 	}
 }

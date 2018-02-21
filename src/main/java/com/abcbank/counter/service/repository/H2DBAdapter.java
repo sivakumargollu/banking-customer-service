@@ -4,6 +4,7 @@ import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.entities.Token;
 import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -97,6 +98,22 @@ public class H2DBAdapter implements DBAdapter<Session> {
 				}
 			}
 		}
+		session.getTransaction().commit();
+		session.close();
 		return retTokens;
+	}
+
+	@Override
+	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		if(isUpdate){
+			session.update(counter);
+		} else {
+			session.save(counter);
+		}
+		session.getTransaction().commit();
+		session.close();
+		return counter;
 	}
 }

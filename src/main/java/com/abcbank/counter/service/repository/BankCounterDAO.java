@@ -4,6 +4,7 @@ import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.entities.Token;
 import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -39,6 +40,10 @@ public class BankCounterDAO {
 
 	public List<Token> readTokens(TokenStatus tokenStatus) {
 		return dbAdapter.readTokens(tokenStatus);
+	}
+
+	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate){
+		return dbAdapter.saveBankCounter(counter, isUpdate);
 	}
 
 }
