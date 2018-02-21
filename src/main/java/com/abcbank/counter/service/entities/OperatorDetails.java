@@ -1,10 +1,9 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.entities;
 
 import com.abcbank.counter.service.enums.Previlages;
 import com.abcbank.counter.service.enums.Role;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Map;
 
 @Entity

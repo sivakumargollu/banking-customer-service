@@ -1,7 +1,8 @@
 package com.abcbank.counter.service;
 
 import com.abcbank.counter.service.enums.*;
-import com.abcbank.counter.service.models.*;
+import com.abcbank.counter.service.entities.*;
+import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.repository.DBAdapter;
 import com.abcbank.counter.service.services.BankCounterService;
 import com.abcbank.counter.service.workers.BankCounter;

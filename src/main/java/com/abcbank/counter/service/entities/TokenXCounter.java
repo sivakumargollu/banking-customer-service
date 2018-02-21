@@ -1,10 +1,9 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.entities;
 
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.TokenStatus;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.joda.time.DateTime;
+
 import javax.persistence.*;
 import java.util.Date;
 

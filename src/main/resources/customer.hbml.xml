@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="com.abcbank.counter.service.models.Customer" table="CUSTOMER">
+    <class name="com.abcbank.counter.service.entities.Customer" table="CUSTOMER">
         <operatorId name="customerId" type="int" column="CUSTOMER_ID">
             <generator class="native"/>
         </operatorId>

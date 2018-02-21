@@ -4,7 +4,7 @@ import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
-import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.entities.Token;
 import com.abcbank.counter.service.repository.CounterRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

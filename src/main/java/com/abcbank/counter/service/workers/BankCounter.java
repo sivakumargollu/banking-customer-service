@@ -3,9 +3,9 @@ package com.abcbank.counter.service.workers;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.TokenStatus;
-import com.abcbank.counter.service.models.OperatorDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.Token;
+import com.abcbank.counter.service.entities.TokenXCounter;
 import com.abcbank.counter.service.repository.CounterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.PriorityQueue;
 
 @Component
