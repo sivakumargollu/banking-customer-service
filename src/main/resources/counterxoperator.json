@@ -1,0 +1,22 @@
+[
+  {
+  "operatorId" : "22334455",
+  "counterId" : "ABCBANK-B1-C1",
+  "status" : true
+  },
+  {
+    "operatorId" : "11223344",
+    "counterId" : "ABCBANK-B1-C2",
+    "status" : true
+  },
+  {
+    "operatorId" : "1234567",
+    "counterId" : "ABCBANK-B1-C3",
+    "status" : true
+  },
+  {
+    "operatorId" : "1111111",
+    "counterId" : "ABCBANK-B1-C4",
+    "status" : true
+  }
+]

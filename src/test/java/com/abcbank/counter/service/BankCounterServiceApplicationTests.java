@@ -4,6 +4,7 @@ import com.abcbank.counter.service.enums.*;
 import com.abcbank.counter.service.entities.*;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.repository.DBAdapter;
+import com.abcbank.counter.service.services.ApplicationBootStrapService;
 import com.abcbank.counter.service.services.BankCounterService;
 import com.abcbank.counter.service.workers.BankCounter;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,6 +28,9 @@ public class BankCounterServiceApplicationTests {
 
 	@Autowired
 	BankCounterService bankCounterService;
+
+	@Autowired
+	ApplicationBootStrapService bootStrapService;
 
 	@Test
 	public void contextLoads() {
@@ -235,17 +239,23 @@ public class BankCounterServiceApplicationTests {
 
 	@Test
 	public void testInitLoadCounters() {
-		PriorityQueue<BankCounter> bankCounters = new PriorityQueue<>();
-		ClassLoader classLoader = getClass().getClassLoader();
-		ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<PriorityQueue<BankCounter>> type = new TypeReference<PriorityQueue<BankCounter>>() {};
-		try {
-			bankCounters = objectMapper.readValue(classLoader.getResourceAsStream("counters.json"), type);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		ArrayList<BankCounter> bankCounters = bootStrapService.intializeCounters();
         Assert.assertTrue(bankCounters != null);
 		Assert.assertEquals(bankCounters.size(), 4);
+	}
+
+	@Test
+	public void testInitLoadOpeators() {
+		ArrayList<OperatorDetails> operatorDetails = bootStrapService.loadOperatorDetails();
+		Assert.assertTrue(operatorDetails != null);
+		Assert.assertEquals(operatorDetails.size(), 4);
+	}
+
+	@Test
+	public void testInitTokenXCounter() {
+		ArrayList<OperatorXCounter> operatorXCounters = bootStrapService.loadCounterOperatorMapping();
+		Assert.assertTrue(operatorXCounters != null);
+		Assert.assertEquals(operatorXCounters.size(), 4);
 	}
 
 	public BankCounter getTestBankCounter() {

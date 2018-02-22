@@ -20,8 +20,8 @@ public class OperatorDetails {
 	@Column
 	Role   role;
 
-	@ElementCollection
 	@Column
+	@ElementCollection
 	Map<String, Previlages[]>  previliages;
 
 	public OperatorDetails(String operatorId, Role role, Map<String, Previlages[]> accessPreviliages) {

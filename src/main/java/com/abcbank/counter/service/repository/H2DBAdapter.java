@@ -1,5 +1,7 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.entities.Token;
@@ -98,8 +100,8 @@ public class H2DBAdapter implements DBAdapter<Session> {
 				}
 			}
 		}
-		session.getTransaction().commit();
-		session.close();
+		//session.getTransaction().commit();
+		//session.close();
 		return retTokens;
 	}
 
@@ -115,5 +117,33 @@ public class H2DBAdapter implements DBAdapter<Session> {
 		session.getTransaction().commit();
 		session.close();
 		return counter;
+	}
+
+	@Override
+	public OperatorDetails saveOpeatorDetails(OperatorDetails operatorDetails, boolean isUpdate) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		if(isUpdate){
+			session.update(operatorDetails);
+		} else {
+			session.save(operatorDetails);
+		}
+		session.getTransaction().commit();
+		session.close();
+		return operatorDetails;
+	}
+
+	@Override
+	public OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		if(isUpdate){
+			session.update(operatorXCounter);
+		} else {
+			session.save(operatorXCounter);
+		}
+		session.getTransaction().commit();
+		session.close();
+		return operatorXCounter;
 	}
 }

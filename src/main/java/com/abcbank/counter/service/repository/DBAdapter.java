@@ -1,5 +1,7 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.entities.Token;
@@ -25,5 +27,9 @@ public interface DBAdapter<T> {
 	List<Token> readTokens(TokenStatus status);
 
 	BankCounter saveBankCounter(BankCounter counter, boolean isUpdate);
+
+	OperatorDetails saveOpeatorDetails(OperatorDetails counter, boolean isUpdate);
+
+	OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate);
 
 }

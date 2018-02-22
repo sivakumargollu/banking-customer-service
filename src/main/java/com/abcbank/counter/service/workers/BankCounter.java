@@ -31,16 +31,15 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 	Long Id;
 
 	@Column
+	String branchId;
+
+	@Column
 	@ElementCollection
 	Map<BankService, Boolean> services;
 
 	@Enumerated
 	@Column
 	CounterStatus                 status;
-
-
-	@Transient
-	OperatorDetails               operatorDetails;
 
 	@Column
 	String                        counterId;
@@ -98,6 +97,14 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 		Id = id;
 	}
 
+	public String getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
+	}
+
 	@Column
 	@ElementCollection
 	Collection<Token> tokenQue;
@@ -118,16 +125,7 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 			CounterStatus status, OperatorDetails operatorDetails) {
 		this.services = services;
 		this.status = status;
-		this.operatorDetails = operatorDetails;
 		this.counterId = counterId;
-	}
-
-	public OperatorDetails getOperatorDetails() {
-		return operatorDetails;
-	}
-
-	public void setOperatorDetails(OperatorDetails operatorDetails) {
-		this.operatorDetails = operatorDetails;
 	}
 
 	public Map<BankService, Boolean> getServices() {

@@ -1,5 +1,7 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.entities.Token;
@@ -46,4 +48,10 @@ public class BankCounterDAO {
 		return dbAdapter.saveBankCounter(counter, isUpdate);
 	}
 
+	public OperatorDetails saveOpeatorDetails(OperatorDetails operatorDetails, boolean isUpdate) {
+		return dbAdapter.saveOpeatorDetails(operatorDetails, isUpdate);
+	}
+	public OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate) {
+		return dbAdapter.saveOperatorXCounter(operatorXCounter, isUpdate);
+	}
 }

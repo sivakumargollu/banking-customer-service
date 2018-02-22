@@ -1,5 +1,7 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
@@ -86,5 +88,13 @@ public class CounterRepository {
 
 	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate){
 		return bankCounterDAO.saveBankCounter(counter, isUpdate);
+	}
+
+	public OperatorDetails saveOpeatorDetails(OperatorDetails operatorDetails, boolean isUpdate) {
+		return bankCounterDAO.saveOpeatorDetails(operatorDetails, isUpdate);
+	}
+
+	public OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate){
+		return bankCounterDAO.saveOperatorXCounter(operatorXCounter, isUpdate);
 	}
 }

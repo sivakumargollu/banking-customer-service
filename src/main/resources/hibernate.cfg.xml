@@ -36,6 +36,8 @@
         <mapping class="com.abcbank.counter.service.entities.Token"/>
         <mapping class="com.abcbank.counter.service.entities.TokenXCounter"/>
         <mapping class="com.abcbank.counter.service.workers.BankCounter"/>
+        <mapping class="com.abcbank.counter.service.entities.OperatorXCounter"/>
+        <mapping class="com.abcbank.counter.service.entities.OperatorDetails"/>
 
 
 
