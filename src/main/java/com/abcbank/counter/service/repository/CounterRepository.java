@@ -32,13 +32,14 @@ public class CounterRepository {
 		return customerDetails;
 	}
 
-	public Token createToken(CustomerDetails customerDetails) {
+	public Token createToken(CustomerDetails customerDetails, String branchId) {
 		Long customerId = customerDetails.getCustomer().getCustomerId();
 		Priority priority = customerDetails.getPriority();
 		LinkedList<BankService> requestedServices = customerDetails.getBankServices();
 		Token token = new Token(customerId, priority, requestedServices);
 		bankCounterDAO.saveToken(token);
 		token.setTokenId(token.getPriority().name() + "-" + token.getId());
+		token.setBranchId(branchId);
 		bankCounterDAO.updateToken(token);
 		return token;
 	}

@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 
 @Component
@@ -53,7 +52,7 @@ public class ApplicationBootStrapService implements ApplicationListener<ContextR
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-		ArrayList<BankCounter> bankCounterList = intializeCounters();
+		ArrayList<BankCounter> bankCounterList = loadCounters();
 		counterManager.setBankCounters(bankCounterList);
 		ArrayList<BankCounter> counters = counterManager.getBankCounters();
 		//Since BankCounter intialization not done by spring container, setting values to component.
@@ -74,7 +73,7 @@ public class ApplicationBootStrapService implements ApplicationListener<ContextR
 	/**
 	 * Reads the json file from resource and intialized the BankCounter information.
 	 */
-	public ArrayList<BankCounter> intializeCounters() {
+	public ArrayList<BankCounter> loadCounters() {
 		ClassLoader classLoader = getClass().getClassLoader();
 		ObjectMapper objectMapper = new ObjectMapper();
 		ArrayList<BankCounter> bankCounters = new ArrayList<BankCounter>();

@@ -6,6 +6,7 @@ import com.abcbank.counter.service.models.CustomerDetails;
 import com.abcbank.counter.service.repository.DBAdapter;
 import com.abcbank.counter.service.services.ApplicationBootStrapService;
 import com.abcbank.counter.service.services.BankCounterService;
+import com.abcbank.counter.service.services.TokenService;
 import com.abcbank.counter.service.workers.BankCounter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,12 @@ public class BankCounterServiceApplicationTests {
 	BankCounterService bankCounterService;
 
 	@Autowired
+	TokenService tokenService;
+
+	@Autowired
 	ApplicationBootStrapService bootStrapService;
+
+	final String testBranchId = "ABCBANK-B1";
 
 	@Test
 	public void contextLoads() {
@@ -50,7 +56,7 @@ public class BankCounterServiceApplicationTests {
 
 	@Test
 	public void shouldSaveToken() {
-		Token token = new Token(1234l, Priority.PREMIUM, BankService.ACC_OPEN);
+ 		Token token = new Token(1234l, Priority.PREMIUM,getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		token = dbAdapter.saveToken(token);
 		Assert.assertTrue(token != null);
 	}
@@ -96,7 +102,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
-		Token token = bankCounterService.createToken(customerDetails);
+		Token token = tokenService.createToken(testBranchId, customerDetails);
 		Assert.assertTrue(token != null);
 		Assert.assertTrue(token.getId() > 0)	;
 	}
@@ -104,7 +110,7 @@ public class BankCounterServiceApplicationTests {
 	@Test
 	public void shouldGetCounterStatus() {
 
-		List<BankCounter> counterList = bankCounterService.counterStatus(null);
+		List<BankCounter> counterList = bankCounterService.counterStatus(testBranchId,null);
 		Assert.assertTrue(counterList != null);
 		Assert.assertTrue(counterList.size() == 4);
 
@@ -113,7 +119,7 @@ public class BankCounterServiceApplicationTests {
     @Test
 	public void shouldReturnSpecificCounterWithID() {
 
-		List<BankCounter> counterList = bankCounterService.counterStatus("ABCBANK-B1-C3");
+		List<BankCounter> counterList = bankCounterService.counterStatus(testBranchId,"ABCBANK-B1-C3");
 		Assert.assertTrue(counterList != null);
 		Assert.assertTrue(counterList.size() == 1);
 
@@ -139,7 +145,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
-		Token token = bankCounterService.createToken(customerDetails);
+		Token token = tokenService.createToken(testBranchId, customerDetails);
 		Assert.assertTrue(token != null);
 		Assert.assertTrue(token.getId() > 0)	;
 
@@ -166,11 +172,11 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
-		Token token = bankCounterService.createToken(customerDetails);
+		Token token = tokenService.createToken(testBranchId, customerDetails);
 		Assert.assertTrue(token != null);
 		Assert.assertTrue(token.getId() > 0)	;
 
-		List<BankCounter> counterList = bankCounterService.counterStatus("ABCBANK-B1-C4");
+		List<BankCounter> counterList = bankCounterService.counterStatus(testBranchId,"ABCBANK-B1-C4");
 		Assert.assertTrue(counterList != null);
 		Assert.assertTrue(counterList.size() > 0);
 		boolean counterAssigned = false;
@@ -189,8 +195,8 @@ public class BankCounterServiceApplicationTests {
 	public void shouldUpdateCounterStatus() throws Exception {
 		BankCounter counter =  getTestBankCounter();
 		counter.setStatus(CounterStatus.CLOSED);
-		bankCounterService.update(counter);
-		BankCounter counter1 = bankCounterService.counterStatus(counter.getCounterId()).get(0);
+		bankCounterService.updateBankCounter(testBranchId, counter);
+		BankCounter counter1 = bankCounterService.counterStatus(testBranchId, counter.getCounterId()).get(0);
 		Assert.assertEquals(counter1.getStatus(), CounterStatus.CLOSED);
 	}
 
@@ -200,8 +206,8 @@ public class BankCounterServiceApplicationTests {
 		HashMap<BankService, Boolean> serviceStatusMap = new HashMap<>();
 		serviceStatusMap.put(BankService.ACC_STMT, false);
 		counter.setServices(serviceStatusMap);
-		bankCounterService.update(counter);
-		BankCounter counter1 = bankCounterService.counterStatus(counter.getCounterId()).get(0);
+		bankCounterService.updateBankCounter(testBranchId, counter);
+		BankCounter counter1 = bankCounterService.counterStatus(testBranchId, counter.getCounterId()).get(0);
 		Assert.assertEquals(counter1.getServices().get(BankService.ACC_STMT), false);
 	}
 
@@ -224,7 +230,7 @@ public class BankCounterServiceApplicationTests {
 		customerDetails.setBankServices(getBankServiceList(new BankService[] {BankService.WITHDRAW, BankService.ACC_OPEN}));
 		customerDetails.setNewCustomer(true);
 
-		Token token = bankCounterService.createToken(customerDetails);
+		Token token = tokenService.createToken(testBranchId, customerDetails);
 		Assert.assertTrue(token != null);
 		Assert.assertTrue(token.getId() > 0)	;
 	}
@@ -239,7 +245,7 @@ public class BankCounterServiceApplicationTests {
 
 	@Test
 	public void testInitLoadCounters() {
-		ArrayList<BankCounter> bankCounters = bootStrapService.intializeCounters();
+		ArrayList<BankCounter> bankCounters = bootStrapService.loadCounters();
         Assert.assertTrue(bankCounters != null);
 		Assert.assertEquals(bankCounters.size(), 4);
 	}

@@ -4,6 +4,7 @@ import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.MultiCounterServices;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.joda.time.DateTime;
@@ -45,7 +46,8 @@ public class Token implements Comparable<Token>, Cloneable {
 
 	@Column(name = "TOKEN_STATUS")
 	@Enumerated(EnumType.STRING)
-	TokenStatus status;
+	TokenStatus
+			status;
 
 	@Column
 	@ElementCollection(fetch = FetchType.EAGER)
@@ -54,6 +56,10 @@ public class Token implements Comparable<Token>, Cloneable {
 	@Column
 	@ElementCollection(fetch = FetchType.EAGER)
 	Map<BankService, String> comments;
+
+	@Column
+	@JsonIgnore
+	String branchId;
 
 	public void setComments(Map<BankService, String> comments) {
 		this.comments = comments;
@@ -79,17 +85,16 @@ public class Token implements Comparable<Token>, Cloneable {
 		this.actionItems = actionItems;
 	}
 
-	public Token() {
-
+	public String getBranchId() {
+		return branchId;
 	}
 
-	public 	Token(Long customerId, Priority priority, BankService reqService) {
-		this.customerId = customerId;
-		this.priority = priority;
-		this.reqService = reqService;
-		this.status = TokenStatus.NEW;
-		this.comments = new HashMap<>();
-		initActionItems();
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
+	}
+
+	public Token() {
+
 	}
 
 	public 	Token(Long customerId, Priority priority, LinkedList<BankService> reqServices) {
@@ -99,23 +104,6 @@ public class Token implements Comparable<Token>, Cloneable {
 		this.comments = new HashMap<>();
 		initActionItems(reqServices);
 		this.reqService = ((LinkedList<BankService>) actionItems).peek();
-	}
-
-	private LinkedList<BankService> initActionItems() {
-		actionItems = new LinkedList<BankService>();
-		if (reqService != null) {
-			if (reqService.isMultiCounter()) {
-				BankService[] services = MultiCounterServices.getActionItemsByService(reqService);
-				if (services != null) {
-					for (BankService service : services) {
-						actionItems.add(service);
-					}
-				}
-			} else {
-				actionItems.add(reqService);
-			}
-		}
-		return (LinkedList<BankService>) actionItems;
 	}
 
 	private LinkedList<BankService> initActionItems(LinkedList<BankService> reqServices) {
@@ -208,7 +196,10 @@ public class Token implements Comparable<Token>, Cloneable {
 
 	@Override
 	public Token clone() {
-		Token token =  new Token(this.customerId, this.priority, this.reqService);
+		Token token =  new Token();
+		token.setCustomerId(getCustomerId());
+		token.setPriority(getPriority());
+		token.setReqService(getReqService());
 		token.setStatus(this.status);
 		token.setActionItems(new LinkedList<>(this.getActionItems()));
 		token.setServeTime(this.serveTime);
@@ -217,6 +208,7 @@ public class Token implements Comparable<Token>, Cloneable {
 		token.setCustomerId(this.getCustomerId());
 		token.setTokenId(getTokenId());
 		token.setComments(new HashMap<>(getComments()));
+		token.setBranchId(getBranchId());
 		return token;
 	}
 }
