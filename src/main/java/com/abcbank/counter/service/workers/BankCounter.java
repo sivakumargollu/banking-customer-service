@@ -3,9 +3,9 @@ package com.abcbank.counter.service.workers;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.TokenStatus;
-import com.abcbank.counter.service.models.OperatorDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.Token;
+import com.abcbank.counter.service.entities.TokenXCounter;
 import com.abcbank.counter.service.repository.CounterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
@@ -13,25 +13,48 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 @Component
+@Entity(name = "BANK_COUNTER")
 public class BankCounter implements Comparable<BankCounter>, Runnable {
 
-	HashMap<BankService, Boolean> services;
+	@Transient
+	Logger logger = LoggerFactory.getLogger(BankCounter.class);
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	Long Id;
+
+	@Column
+	String branchId;
+
+	@Column
+	@ElementCollection
+	Map<BankService, Boolean> services;
+
+	@Enumerated
+	@Column
 	CounterStatus                 status;
-	OperatorDetails               operatorDetails;
+
+	@Column
 	String                        counterId;
+
+	@Transient
 	Long                          refreshIntraval;
 
 	@JsonIgnore
 	@Autowired
+	@Transient
 	CounterManager counterManager;
 
 	@JsonIgnore
 	@Autowired
+	@Transient
 	CounterRepository counterRepository;
 
 	public CounterManager getCounterManager() {
@@ -66,9 +89,27 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 		this.refreshIntraval = refreshIntraval;
 	}
 
-	PriorityQueue<Token> tokenQue;
+	public Long getId() {
+		return Id;
+	}
 
-	public PriorityQueue<Token> getTokenQue() {
+	public void setId(Long id) {
+		Id = id;
+	}
+
+	public String getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
+	}
+
+	@Column
+	@ElementCollection
+	Collection<Token> tokenQue;
+
+	public Collection<Token> getTokenQue() {
 		return tokenQue;
 	}
 
@@ -84,19 +125,10 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 			CounterStatus status, OperatorDetails operatorDetails) {
 		this.services = services;
 		this.status = status;
-		this.operatorDetails = operatorDetails;
 		this.counterId = counterId;
 	}
 
-	public OperatorDetails getOperatorDetails() {
-		return operatorDetails;
-	}
-
-	public void setOperatorDetails(OperatorDetails operatorDetails) {
-		this.operatorDetails = operatorDetails;
-	}
-
-	public HashMap<BankService, Boolean> getServices() {
+	public Map<BankService, Boolean> getServices() {
 		return services;
 	}
 
@@ -104,7 +136,6 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 		this.services = services;
 	}
 
-	Logger logger = LoggerFactory.getLogger(BankCounter.class);
 
 	public CounterStatus getStatus() {
 		return status;
@@ -152,7 +183,8 @@ public class BankCounter implements Comparable<BankCounter>, Runnable {
 					Thread.sleep(refreshIntraval);
 				} else {
 					while (!tokenQue.isEmpty()){
-						Token token = serve(tokenQue.poll());
+						Token token = ((PriorityQueue<Token>)(tokenQue)).poll();
+						token = serve(token);
 						TokenXCounter tokenXCounter = new TokenXCounter(token.getId(), counterId, token.getStatus(), token.getReqService());
 						counterRepository.updateTokenCounterStatus(tokenXCounter);
 						counterRepository.updateToken(token.clone());

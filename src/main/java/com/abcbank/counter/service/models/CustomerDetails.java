@@ -1,5 +1,7 @@
 package com.abcbank.counter.service.models;
 
+import com.abcbank.counter.service.entities.Address;
+import com.abcbank.counter.service.entities.Customer;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
 
@@ -7,12 +9,12 @@ import java.util.LinkedList;
 
 public class CustomerDetails {
 
-	Customer   customer;
-	Address    address;
-	Priority   priority;
+	Customer                customer;
+	Address                 address;
+	Priority                priority;
 	LinkedList<BankService> bankServices;
-	boolean    isNewCustomer;
-	int        customerId;
+	boolean                 isNewCustomer;
+	int                     customerId;
 
 	public Customer getCustomer() {
 		return customer;

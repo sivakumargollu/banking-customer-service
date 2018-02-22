@@ -1,60 +1,34 @@
 [
   {
-    "counterId":"ABCBANK-B1-C1",
+    "branchId" : "ABCBANK-B1",
+    "counterId": "ABCBANK-B1-C1",
     "services": {
       "ACC_STMT" : true,
       "ATM_SERVICES" : true
     },
-    "status":"AVAILABLE",
-    "operatorDetails":{
-      "operatorId":"22334455",
-      "role":"SINGLE_WINDOW_OPERATOR",
-      "accessPreviliages":{
-        "token":[
-          "UPDATE",
-          "READ"
-        ]
-      }
-    }
+    "status":"AVAILABLE"
   },
   {
-    "counterId":"ABCBANK-B1-C2",
+    "branchId" : "ABCBANK-B1",
+    "counterId": "ABCBANK-B1-C2",
     "services": {
       "DEPOSIT": true,
       "WITHDRAW": true
     },
-    "status":"AVAILABLE",
-    "operatorDetails":{
-      "operatorId":"11223344",
-      "role":"SINGLE_WINDOW_OPERATOR",
-      "accessPreviliages":{
-        "token":[
-          "UPDATE",
-          "READ"
-        ]
-      }
-    }
+    "status":"AVAILABLE"
   },
   {
-    "counterId":"ABCBANK-B1-C3",
+    "branchId" : "ABCBANK-B1",
+    "counterId": "ABCBANK-B1-C3",
     "services": {
       "DEPOSIT": true,
       "WITHDRAW": true
     },
-    "status":"AVAILABLE",
-    "operatorDetails":{
-      "operatorId":"1234567",
-      "role":"SINGLE_WINDOW_OPERATOR",
-      "accessPreviliages":{
-        "token":[
-          "UPDATE",
-          "READ"
-        ]
-      }
-    }
+    "status":"AVAILABLE"
   },
   {
-    "counterId":"ABCBANK-B1-C4",
+    "branchId" : "ABCBANK-B1",
+    "counterId": "ABCBANK-B1-C4",
     "services": {
       "DEPOSIT" : true,
       "WITHDRAW" : true,
@@ -64,18 +38,6 @@
       "REGISTRATION" : true,
       "ACC_OPEN" : true
     },
-    "status":"AVAILABLE",
-    "operatorDetails":{
-      "operatorId":"1111111",
-      "role":"MANAGER",
-      "accessPreviliages":{
-        "token":[
-          "UPDATE",
-          "READ",
-          "UPDATE",
-          "DELETE"
-        ]
-      }
-    }
+    "status":"AVAILABLE"
   }
 ]

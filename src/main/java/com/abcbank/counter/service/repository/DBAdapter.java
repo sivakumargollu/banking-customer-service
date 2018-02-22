@@ -1,9 +1,12 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.Token;
+import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 
 import java.util.List;
 
@@ -22,5 +25,11 @@ public interface DBAdapter<T> {
 	List<TokenXCounter> getTokenStatus(Long tokenId);
 
 	List<Token> readTokens(TokenStatus status);
+
+	BankCounter saveBankCounter(BankCounter counter, boolean isUpdate);
+
+	OperatorDetails saveOpeatorDetails(OperatorDetails counter, boolean isUpdate);
+
+	OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate);
 
 }

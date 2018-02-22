@@ -1,9 +1,12 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.Token;
+import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class H2DBAdapter implements DBAdapter<Session> {
@@ -98,6 +100,50 @@ public class H2DBAdapter implements DBAdapter<Session> {
 				}
 			}
 		}
+		//session.getTransaction().commit();
+		//session.close();
 		return retTokens;
+	}
+
+	@Override
+	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		if(isUpdate){
+			session.update(counter);
+		} else {
+			session.save(counter);
+		}
+		session.getTransaction().commit();
+		session.close();
+		return counter;
+	}
+
+	@Override
+	public OperatorDetails saveOpeatorDetails(OperatorDetails operatorDetails, boolean isUpdate) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		if(isUpdate){
+			session.update(operatorDetails);
+		} else {
+			session.save(operatorDetails);
+		}
+		session.getTransaction().commit();
+		session.close();
+		return operatorDetails;
+	}
+
+	@Override
+	public OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate) {
+		Session session = getConnection(true);
+		session.beginTransaction();
+		if(isUpdate){
+			session.update(operatorXCounter);
+		} else {
+			session.save(operatorXCounter);
+		}
+		session.getTransaction().commit();
+		session.close();
+		return operatorXCounter;
 	}
 }

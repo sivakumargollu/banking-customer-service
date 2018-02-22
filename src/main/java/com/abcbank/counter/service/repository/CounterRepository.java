@@ -1,12 +1,15 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.exceptions.DataNotFoundException;
 import com.abcbank.counter.service.models.CustomerDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.Token;
+import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,13 +32,14 @@ public class CounterRepository {
 		return customerDetails;
 	}
 
-	public Token createToken(CustomerDetails customerDetails) {
+	public Token createToken(CustomerDetails customerDetails, String branchId) {
 		Long customerId = customerDetails.getCustomer().getCustomerId();
 		Priority priority = customerDetails.getPriority();
 		LinkedList<BankService> requestedServices = customerDetails.getBankServices();
 		Token token = new Token(customerId, priority, requestedServices);
 		bankCounterDAO.saveToken(token);
 		token.setTokenId(token.getPriority().name() + "-" + token.getId());
+		token.setBranchId(branchId);
 		bankCounterDAO.updateToken(token);
 		return token;
 	}
@@ -81,5 +85,17 @@ public class CounterRepository {
 
 	public List<Token> readTokens(TokenStatus tokenStatus) {
 		return bankCounterDAO.readTokens(tokenStatus);
+	}
+
+	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate){
+		return bankCounterDAO.saveBankCounter(counter, isUpdate);
+	}
+
+	public OperatorDetails saveOpeatorDetails(OperatorDetails operatorDetails, boolean isUpdate) {
+		return bankCounterDAO.saveOpeatorDetails(operatorDetails, isUpdate);
+	}
+
+	public OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate){
+		return bankCounterDAO.saveOperatorXCounter(operatorXCounter, isUpdate);
 	}
 }

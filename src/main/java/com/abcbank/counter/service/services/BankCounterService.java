@@ -1,13 +1,6 @@
 package com.abcbank.counter.service.services;
 
-import com.abcbank.counter.service.enums.BankService;
-import com.abcbank.counter.service.enums.Priority;
-import com.abcbank.counter.service.enums.TokenStatus;
-import com.abcbank.counter.service.exceptions.DataNotFoundException;
-import com.abcbank.counter.service.exceptions.ServiceException;
-import com.abcbank.counter.service.models.CustomerDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.repository.CounterRepository;
 import com.abcbank.counter.service.workers.BankCounter;
 import com.abcbank.counter.service.workers.CounterManager;
@@ -28,29 +21,10 @@ public class BankCounterService {
 	@Autowired
 	CounterManager counterManager;
 
-	@RequestMapping(value = "/token/new", method = RequestMethod.POST)
-	@ResponseBody
-	public Token createToken(@RequestBody CustomerDetails customerDetails) {
-		if (customerDetails.isNewCustomer()) {
-			counterRepository.saveCustomerDetails(customerDetails);
-		}
-		return counterRepository.createToken(customerDetails);
-	}
-
-	@RequestMapping(value = "/token/update", method = RequestMethod.POST)
-	@ResponseBody
-	public Token updateToken(@RequestParam Long tokenId, @RequestParam(required = false) TokenStatus tokenStatus,
-			@RequestParam(required = false) BankService service, @RequestParam(required = false) String comments,
-			@RequestParam(required = false) Priority priority) throws ServiceException {
-		try {
-			return counterRepository.updateToken(tokenId, tokenStatus, service, comments, priority);
-		} catch (DataNotFoundException e){
-			throw new ServiceException("Failed to serve request due to " + e.getMessage());
-		}
-	}
-
-	@RequestMapping(value = "/counter/status", method = RequestMethod.GET)
-	public List<BankCounter> counterStatus(@RequestParam(required = false) String counterId) {
+	@RequestMapping(value = "/{branchId}/counter/status", method = RequestMethod.GET)
+	public List<BankCounter> counterStatus(
+			@PathVariable("branchId") String branchId,
+			@RequestParam(required = false) String counterId) {
 		if(counterId != null && counterId.trim().length() > 0){
 			return counterManager.getCounterStatus(counterId);
 		} else  {
@@ -58,16 +32,42 @@ public class BankCounterService {
 		}
 	}
 
-	@RequestMapping(value = "/token/status", method = RequestMethod.GET)
-	public List<TokenXCounter> tokenStatus(@RequestParam(required = true) Long tokenId) throws Exception {
-		if(tokenId == null){
-			throw new Exception("Not a Valid token");
-		}
-		return counterRepository.getTokenStatus(tokenId);
+	/**
+	 * Updates the token attibutes such it's availability status, services
+	 * BranchId and refresh intraval.
+	 * @param counter
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{branchId}/counter/update", method = RequestMethod.POST)
+	public BankCounter updateBankCounter(@PathVariable("branchId") String branchId, @RequestBody  BankCounter counter) throws Exception {
+		return counterManager.updateCounterStatus(counter);
 	}
 
-	@RequestMapping(value = "/counter/update", method = RequestMethod.POST)
-	public BankCounter update(@RequestBody  BankCounter counter) throws Exception {
-		return counterManager.updateCounterStatus(counter);
+	/**
+	 * Allocation of counter to operator, if the mapping exists it update the status
+	 * @param operatorXCounterMapping
+	 * @return
+	 */
+	@RequestMapping(value = "/{branchId}/counter/assign/operator", method = RequestMethod.POST)
+	public OperatorXCounter saveOperatorXCounterInfo(@PathVariable("branchId") String branchId, OperatorXCounter operatorXCounterMapping){
+		if(operatorXCounterMapping.getId() != null && operatorXCounterMapping.getId() > 0){
+			return counterRepository.saveOperatorXCounter(operatorXCounterMapping, true);
+		}else {
+			return counterRepository.saveOperatorXCounter(operatorXCounterMapping, false);
+		}
+	}
+
+	/**
+	 * Return List of operators activly working at different counters in the branch, If counterId and operatorId passed they will act as filters
+	 * @param branchId
+	 * @param counterId
+	 * @param operatorId
+	 */
+	@RequestMapping(value = "/{branchId}/counter/operators/info", method = RequestMethod.GET)
+	public List<OperatorXCounter> getOperatorXCounterInfo(@PathVariable("branchId") String branchId,
+			@RequestParam(required = false) String counterId,
+			@RequestParam(required = false) String operatorId){
+		return null;
 	}
 }

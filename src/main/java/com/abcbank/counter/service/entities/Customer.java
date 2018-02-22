@@ -1,4 +1,4 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.entities;
 
 import javax.persistence.*;
 

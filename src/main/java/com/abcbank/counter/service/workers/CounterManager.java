@@ -1,10 +1,12 @@
 package com.abcbank.counter.service.workers;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.BankService;
 import com.abcbank.counter.service.enums.CounterStatus;
 import com.abcbank.counter.service.enums.Priority;
 import com.abcbank.counter.service.enums.TokenStatus;
-import com.abcbank.counter.service.models.Token;
+import com.abcbank.counter.service.entities.Token;
 import com.abcbank.counter.service.repository.CounterRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,9 +33,11 @@ public class CounterManager implements Runnable {
 
 	ArrayList<BankCounter>   bankCounters;
 	ConcurrentLinkedQueue<Token> waitingTokens;
+	List<OperatorXCounter> operatorXCounters;
+	List<OperatorDetails> operatorDetailsList;
 
-	@Value("${bankcounter-resource}")
-	String counterResourceFile;
+	@Autowired
+	CounterRepository counterRepository;
 
 	@Value("${priority-factor}")
 	String priorityFactor;
@@ -41,13 +45,7 @@ public class CounterManager implements Runnable {
 	@Value("${bankcounter.manager.refresh-intraval}")
 	Long refreshIntraval;
 
-	@Value("${bankcounter.refresh-intraval}")
-	Long counterRefreshIntraval;
-
-
-
-	@Autowired
-	CounterRepository counterRepository;
+	Logger logger = LoggerFactory.getLogger(CounterManager.class);
 
 	public ConcurrentLinkedQueue<Token> getWaitingTokens() {
 		return waitingTokens;
@@ -62,7 +60,21 @@ public class CounterManager implements Runnable {
 		return waitingTokens.size();
 	}
 
-	Logger logger = LoggerFactory.getLogger(CounterManager.class);
+	public List<OperatorXCounter> getOperatorXCounters() {
+		return operatorXCounters;
+	}
+
+	public void setOperatorXCounters(List<OperatorXCounter> operatorXCounters) {
+		this.operatorXCounters = operatorXCounters;
+	}
+
+	public List<OperatorDetails> getOperatorDetailsList() {
+		return operatorDetailsList;
+	}
+
+	public void setOperatorDetailsList(List<OperatorDetails> operatorDetailsList) {
+		this.operatorDetailsList = operatorDetailsList;
+	}
 
 	public ArrayList<BankCounter> getBankCounters() {
 		return bankCounters;
@@ -73,7 +85,6 @@ public class CounterManager implements Runnable {
 	}
 
 	public CounterManager(String counterResourceFile) {
-		this.counterResourceFile = counterResourceFile;
 		waitingTokens = new ConcurrentLinkedQueue<Token>();
 	}
 
@@ -103,7 +114,8 @@ public class CounterManager implements Runnable {
 			counterRepository.updateToken(token.clone());
 			return;
 		}
-		PriorityQueue<Token> tokenQue = counter.getTokenQue();
+		PriorityQueue<Token> tokenQue = (counter.getTokenQue() instanceof PriorityQueue) ?
+				((PriorityQueue<Token>)counter.getTokenQue()) : new PriorityQueue<Token>(counter.getTokenQue());
 		token.setReqService(reqService);
 		long serveTime = tokenQue.size() * reqService.getAvgTimeRequiredInMin() * 60000; //into milli seconds
 		if (token.getPriority().equals(Priority.PREMIUM)) {
@@ -119,28 +131,6 @@ public class CounterManager implements Runnable {
 		token.setActionItems(itemList);
 	}
 
-	/**
-	 * Reads the json file from resource and intialized the BankCounter information.
-	 */
-	public void intializeCounters() {
-		ClassLoader classLoader = getClass().getClassLoader();
-		ObjectMapper objectMapper = new ObjectMapper();
-		final TypeReference<ArrayList<BankCounter>> type = new TypeReference<ArrayList<BankCounter>>() {
-		};
-		try {
-			bankCounters = objectMapper.readValue(classLoader.getResourceAsStream(counterResourceFile), type);
-		} catch (IOException e) {
-			logger.error("Error in intializing ", e);
-		}
-
-		//setting empty que
-		for (BankCounter bankCounter : bankCounters) {
-			bankCounter.setTokenQue(new PriorityQueue<Token>());
-			bankCounter.setRefreshIntraval(counterRefreshIntraval);
-		}
-		startCounters();
-
-	}
 
 	/**
 	 * Make all counters as Runnable instances
@@ -230,7 +220,6 @@ public class CounterManager implements Runnable {
 				 counter.getServices().put(bankService, inputBankCounter.getServices().get(bankService));
 			 }
 			 notifyServiceChanges(counter);
-		 	counter.setOperatorDetails(inputBankCounter.getOperatorDetails());
 		 	return counter;
 		 } else {
 		 	throw new Exception("No counter available with given counterId");

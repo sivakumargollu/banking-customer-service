@@ -1,9 +1,12 @@
 package com.abcbank.counter.service.repository;
 
+import com.abcbank.counter.service.entities.OperatorDetails;
+import com.abcbank.counter.service.entities.OperatorXCounter;
 import com.abcbank.counter.service.enums.TokenStatus;
 import com.abcbank.counter.service.models.CustomerDetails;
-import com.abcbank.counter.service.models.Token;
-import com.abcbank.counter.service.models.TokenXCounter;
+import com.abcbank.counter.service.entities.Token;
+import com.abcbank.counter.service.entities.TokenXCounter;
+import com.abcbank.counter.service.workers.BankCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -41,4 +44,14 @@ public class BankCounterDAO {
 		return dbAdapter.readTokens(tokenStatus);
 	}
 
+	public BankCounter saveBankCounter(BankCounter counter, boolean isUpdate){
+		return dbAdapter.saveBankCounter(counter, isUpdate);
+	}
+
+	public OperatorDetails saveOpeatorDetails(OperatorDetails operatorDetails, boolean isUpdate) {
+		return dbAdapter.saveOpeatorDetails(operatorDetails, isUpdate);
+	}
+	public OperatorXCounter saveOperatorXCounter(OperatorXCounter operatorXCounter, boolean isUpdate) {
+		return dbAdapter.saveOperatorXCounter(operatorXCounter, isUpdate);
+	}
 }

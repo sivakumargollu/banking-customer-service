@@ -1,18 +1,30 @@
-package com.abcbank.counter.service.models;
+package com.abcbank.counter.service.entities;
 
 import com.abcbank.counter.service.enums.Previlages;
 import com.abcbank.counter.service.enums.Role;
 
-import java.util.List;
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
 public class OperatorDetails {
 
-	String operatorId;
-	Role   role;
-	Map    previliages;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	Long Id;
 
-	public OperatorDetails(String operatorId, Role role, Map<String, List<Previlages>> accessPreviliages) {
+	@Column
+	String operatorId;
+
+	@Enumerated(EnumType.STRING)
+	@Column
+	Role   role;
+
+	@Column
+	@ElementCollection
+	Map<String, Previlages[]>  previliages;
+
+	public OperatorDetails(String operatorId, Role role, Map<String, Previlages[]> accessPreviliages) {
 		this.previliages = accessPreviliages;
 		this.operatorId = operatorId;
 		this.role = role;
