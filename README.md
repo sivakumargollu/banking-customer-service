@@ -15,15 +15,8 @@ When an multi-couter service requested, A <b> LinkedList </b> of 'actionItems' w
 
 ![flowdesign](https://user-images.githubusercontent.com/10070580/36557916-90be44fe-182f-11e8-87df-2abc0a3f24e7.png)
 
-##### Class Diagram
 
-![bankcounterservice](https://user-images.githubusercontent.com/10070580/36556135-2b70caae-182a-11e8-9355-f640ac620b26.jpg)
-
-##### DB Design 
-   ![db](https://user-images.githubusercontent.com/10070580/36557812-4c8746c8-182f-11e8-83ed-3fc06278debd.png)
-   ![db2](https://user-images.githubusercontent.com/10070580/36557813-4cfa556e-182f-11e8-99ca-f4167d0f2a1b.png)
-
-#####API Design
+#API Design
 
 ```
 http://localhost:8080/ABCBank/toekn-service//{branchId}/token/new - Method post
@@ -108,7 +101,6 @@ Reponse
 }
 ``` 
 
-
 API to updates token attributes such as adding commnets, makring cancelled/completed etc..
 ```
 2. http://localhost:8080/ABCBank/toekn-service/{branchId}/token/update
@@ -141,5 +133,13 @@ API to assign an operator to counter
    http://localhost:8080/ABCBank/counter-service/{branchId}/counter/operators/info],methods=[GET]
  ```  
   
+##### Class Diagram
+
+![bankcounterservice](https://user-images.githubusercontent.com/10070580/36556135-2b70caae-182a-11e8-9355-f640ac620b26.jpg)
+
+#DB Design
+
+   ![db](https://user-images.githubusercontent.com/10070580/36557812-4c8746c8-182f-11e8-83ed-3fc06278debd.png)
+   ![db2](https://user-images.githubusercontent.com/10070580/36557813-4cfa556e-182f-11e8-99ca-f4167d0f2a1b.png)
 
 
