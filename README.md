@@ -25,8 +25,10 @@ When an multi-couter service requested, A <b> LinkedList </b> of 'actionItems' w
 
 #####API Design
 
-/ABCBank/toekn-service//{branchId}/token/new - Method post
-
+```
+http://localhost:8080/ABCBank/toekn-service//{branchId}/token/new - Method post
+```
+Payload
 ``` 
 {
   "priority":"PREMIUM",
@@ -50,7 +52,7 @@ Reponse
 "tokenId": "PREMIUM-2",
 "customerId": 2,
 "priority": "PREMIUM",
-"reqService": "REGISTRATION",
+"reqService": ["ACC_OPEN" , "ACC_STMT"],
 "serveTime": null,
 "createdTime": 1519324378875,
 "status": "NEW",
@@ -84,22 +86,60 @@ Single counter  operation
 }
 ``` 
 
-2. <B>/ABCBank/toekn-service/{branchId}/token/update </b>
+Reponse 
 
-Updates token attributes such as adding commnets, makring cancelled/completed etc..
+``` 
+{
+"tokenId": "PREMIUM-2",
+"customerId": 2,
+"priority": "PREMIUM",
+"reqService": ["WITHDRWA"],
+"serveTime": null,
+"createdTime": 1519324378875,
+"status": "NEW",
+"actionItems": [
+  "REGISTRATION",
+  "DEPOSIT",
+  "PASSBOOK",
+  "ACC_STMT"
+],
+"comments": {},
+"id": 2
+}
+``` 
 
 
-3. <b>/ABCBank/toekn-service/{branchId}/token/status</b>
+API to updates token attributes such as adding commnets, makring cancelled/completed etc..
+```
+2. http://localhost:8080/ABCBank/toekn-service/{branchId}/token/update
+```
 
-   Returns token processing information 
-   
+API which Returns token processing information 
+```
+http://localhost:8080/ABCBank/toekn-service/{branchId}/token/status
+```
+
 Counter related operation such modifying services at counter and assign operator counter will be handled in counter-service
-   <b>
-   1. [/ABCBank/counter-service/{branchId}/counter/status],methods=[GET]
-   2. [/ABCBank/counter-service/{branchId}/counter/update],methods=[POST]
-   3. [/ABCBank/counter-service/{branchId}/counter/assign/operator],methods=[POST]
-   4. /ABCBank/counter-service/{branchId}/counter/operators/info],methods=[GET]
-   </b>
+
+API to return counter status
+  ```
+  [http://localhost:8080/ABCBank/counter-service/{branchId}/counter/status],methods=[GET]
+  ```
+API to return update the counter information i.e changing service status, availability etc..
+ 
+  ```
+  [http://localhost:8080/ABCBank/counter-service/{branchId}/counter/update],methods=[POST]
+  ```
+API to assign an operator to counter 
+ ```
+  [http://localhost:8080/ABCBank/counter-service/{branchId}/counter/assign/operator],methods=[POST]
+ ```  
+ 
+ API to read all operators information at bank
+ 
+ ```
+   http://localhost:8080/ABCBank/counter-service/{branchId}/counter/operators/info],methods=[GET]
+ ```  
   
 
 
