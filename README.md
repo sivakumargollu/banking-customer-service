@@ -19,7 +19,7 @@ When an multi-couter service requested, A <b> LinkedList </b> of 'actionItems' w
 # API Design
 
 ```
-http://localhost:8080/ABCBank/toekn-service//{branchId}/token/new - Method post
+POST : http://localhost:8080/ABCBank/toekn-service//{branchId}/token/new
 ```
 Payload
 ``` 
@@ -86,15 +86,12 @@ Reponse
 "tokenId": "PREMIUM-2",
 "customerId": 2,
 "priority": "PREMIUM",
-"reqService": ["WITHDRWA"],
+"reqService": ["WITHDRAW"],
 "serveTime": null,
 "createdTime": 1519324378875,
 "status": "NEW",
 "actionItems": [
-  "REGISTRATION",
-  "DEPOSIT",
-  "PASSBOOK",
-  "ACC_STMT"
+  "WITHDRAW"
 ],
 "comments": {},
 "id": 2
