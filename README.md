@@ -19,7 +19,7 @@ When an multi-couter service requested, A <b> LinkedList </b> of 'actionItems' w
 # API Design
 
 ```
-POST : http://localhost:8080/ABCBank/toekn-service//{branchId}/token/new
+POST : http://localhost:8080/ABCBank/token-service//{branchId}/token/new
 ```
 Payload
 ``` 
@@ -83,7 +83,7 @@ Reponse
 
 ``` 
 {
-"tokenId": "PREMIUM-2",
+"tokenId": "REGULAR-2",
 "customerId": 2,
 "priority": "PREMIUM",
 "reqService": ["WITHDRAW"],
@@ -100,12 +100,12 @@ Reponse
 
 API to updates token attributes such as adding commnets, makring cancelled/completed etc..
 ```
-2. http://localhost:8080/ABCBank/toekn-service/{branchId}/token/update
+2. http://localhost:8080/ABCBank/token-service/{branchId}/token/update
 ```
 
 API which Returns token processing information 
 ```
-http://localhost:8080/ABCBank/toekn-service/{branchId}/token/status
+http://localhost:8080/ABCBank/token-service/{branchId}/token/status
 ```
 
 Counter related operation such modifying services at counter and assign operator counter will be handled in counter-service
