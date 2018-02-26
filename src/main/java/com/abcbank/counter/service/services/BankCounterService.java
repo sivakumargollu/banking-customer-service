@@ -68,6 +68,6 @@ public class BankCounterService {
 	public List<OperatorXCounter> getOperatorXCounterInfo(@PathVariable("branchId") String branchId,
 			@RequestParam(required = false) String counterId,
 			@RequestParam(required = false) String operatorId){
-		return null;
+		return counterManager.getOperatorXCounters();
 	}
 }
